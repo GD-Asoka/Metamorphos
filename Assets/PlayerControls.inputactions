@@ -33,36 +33,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AltFire",
-                    "type": "Button",
-                    "id": "1e4c0188-2724-416a-b8ee-2a665482d13b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "640f7129-366d-46ce-9c86-a87206e27c46",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Fish",
-                    "type": "Button",
-                    "id": "61b35c53-1869-4375-89e8-dc92babb3774",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Bird",
-                    "type": "Button",
-                    "id": "688bd764-5776-42b9-b49d-ec8b830f2749",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -74,7 +47,7 @@
                     "id": "8d481f78-5afe-4812-a9cd-0bb0aee9f528",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": "Hold",
+                    "interactions": "",
                     "initialStateCheck": true
                 }
             ],
@@ -302,7 +275,7 @@
                 {
                     "name": "",
                     "id": "bfe4c6ea-0893-4126-8543-5427b7dd4e9c",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -342,83 +315,6 @@
                     "action": "Jump",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "0ce40bf4-6604-4c2d-a21e-7788e75cf5f0",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "AltFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6f6d5a78-b874-473c-8a45-6be6a0d13373",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "AltFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "85a7ed1e-2355-4bde-bf1d-2730434cdf38",
-                    "path": "<Touchscreen>/primaryTouch/tap",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Touch",
-                    "action": "AltFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "53cee9e0-ed46-4870-82c0-721290fbf31a",
-                    "path": "<Joystick>/trigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Joystick",
-                    "action": "AltFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "95d58317-1e7d-48c0-a978-7e85d5d82889",
-                    "path": "<XRController>/{PrimaryAction}",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "XR",
-                    "action": "AltFire",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "a6d7cdd1-d11d-4a4c-bfd9-8fabfa10e7c3",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Fish",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "ea6236fb-9008-4169-be0d-fce9e040501b",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Bird",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         },

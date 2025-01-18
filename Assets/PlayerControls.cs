@@ -55,36 +55,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""AltFire"",
-                    ""type"": ""Button"",
-                    ""id"": ""1e4c0188-2724-416a-b8ee-2a665482d13b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""640f7129-366d-46ce-9c86-a87206e27c46"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Fish"",
-                    ""type"": ""Button"",
-                    ""id"": ""61b35c53-1869-4375-89e8-dc92babb3774"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Bird"",
-                    ""type"": ""Button"",
-                    ""id"": ""688bd764-5776-42b9-b49d-ec8b830f2749"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -96,7 +69,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""id"": ""8d481f78-5afe-4812-a9cd-0bb0aee9f528"",
                     ""expectedControlType"": ""Axis"",
                     ""processors"": """",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""initialStateCheck"": true
                 }
             ],
@@ -324,7 +297,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bfe4c6ea-0893-4126-8543-5427b7dd4e9c"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard&Mouse"",
@@ -364,83 +337,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""0ce40bf4-6604-4c2d-a21e-7788e75cf5f0"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Gamepad"",
-                    ""action"": ""AltFire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""6f6d5a78-b874-473c-8a45-6be6a0d13373"",
-                    ""path"": ""<Mouse>/rightButton"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""AltFire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""85a7ed1e-2355-4bde-bf1d-2730434cdf38"",
-                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Touch"",
-                    ""action"": ""AltFire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""53cee9e0-ed46-4870-82c0-721290fbf31a"",
-                    ""path"": ""<Joystick>/trigger"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Joystick"",
-                    ""action"": ""AltFire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""95d58317-1e7d-48c0-a978-7e85d5d82889"",
-                    ""path"": ""<XRController>/{PrimaryAction}"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""XR"",
-                    ""action"": ""AltFire"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""a6d7cdd1-d11d-4a4c-bfd9-8fabfa10e7c3"",
-                    ""path"": ""<Keyboard>/e"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Fish"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""ea6236fb-9008-4169-be0d-fce9e040501b"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Bird"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1029,10 +925,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         m_Player_Fire = m_Player.FindAction("Fire", throwIfNotFound: true);
-        m_Player_AltFire = m_Player.FindAction("AltFire", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
-        m_Player_Fish = m_Player.FindAction("Fish", throwIfNotFound: true);
-        m_Player_Bird = m_Player.FindAction("Bird", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
@@ -1110,10 +1003,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Look;
     private readonly InputAction m_Player_Fire;
-    private readonly InputAction m_Player_AltFire;
     private readonly InputAction m_Player_Interact;
-    private readonly InputAction m_Player_Fish;
-    private readonly InputAction m_Player_Bird;
     private readonly InputAction m_Player_Jump;
     public struct PlayerActions
     {
@@ -1122,10 +1012,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @Move => m_Wrapper.m_Player_Move;
         public InputAction @Look => m_Wrapper.m_Player_Look;
         public InputAction @Fire => m_Wrapper.m_Player_Fire;
-        public InputAction @AltFire => m_Wrapper.m_Player_AltFire;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
-        public InputAction @Fish => m_Wrapper.m_Player_Fish;
-        public InputAction @Bird => m_Wrapper.m_Player_Bird;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
@@ -1145,18 +1032,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Fire.started += instance.OnFire;
             @Fire.performed += instance.OnFire;
             @Fire.canceled += instance.OnFire;
-            @AltFire.started += instance.OnAltFire;
-            @AltFire.performed += instance.OnAltFire;
-            @AltFire.canceled += instance.OnAltFire;
             @Interact.started += instance.OnInteract;
             @Interact.performed += instance.OnInteract;
             @Interact.canceled += instance.OnInteract;
-            @Fish.started += instance.OnFish;
-            @Fish.performed += instance.OnFish;
-            @Fish.canceled += instance.OnFish;
-            @Bird.started += instance.OnBird;
-            @Bird.performed += instance.OnBird;
-            @Bird.canceled += instance.OnBird;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
@@ -1173,18 +1051,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Fire.started -= instance.OnFire;
             @Fire.performed -= instance.OnFire;
             @Fire.canceled -= instance.OnFire;
-            @AltFire.started -= instance.OnAltFire;
-            @AltFire.performed -= instance.OnAltFire;
-            @AltFire.canceled -= instance.OnAltFire;
             @Interact.started -= instance.OnInteract;
             @Interact.performed -= instance.OnInteract;
             @Interact.canceled -= instance.OnInteract;
-            @Fish.started -= instance.OnFish;
-            @Fish.performed -= instance.OnFish;
-            @Fish.canceled -= instance.OnFish;
-            @Bird.started -= instance.OnBird;
-            @Bird.performed -= instance.OnBird;
-            @Bird.canceled -= instance.OnBird;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
@@ -1373,10 +1242,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnMove(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
-        void OnAltFire(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
-        void OnFish(InputAction.CallbackContext context);
-        void OnBird(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
     }
     public interface IUIActions
