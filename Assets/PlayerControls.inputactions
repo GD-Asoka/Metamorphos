@@ -7,7 +7,7 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Value",
+                    "type": "PassThrough",
                     "id": "a1578005-2de8-4b38-88e9-5adf70883e2d",
                     "expectedControlType": "Vector2",
                     "processors": "",
@@ -33,24 +33,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "AltFire",
-                    "type": "Button",
-                    "id": "7a71a303-32f3-4bcd-8fcb-819f21e94161",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Jump",
-                    "type": "Button",
-                    "id": "548d571a-9bad-4122-9264-54833a39298f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Interact",
                     "type": "Button",
                     "id": "640f7129-366d-46ce-9c86-a87206e27c46",
@@ -60,22 +42,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Bird",
-                    "type": "Button",
-                    "id": "6ee1750b-7250-4c25-976a-f45c93dfe746",
-                    "expectedControlType": "Button",
+                    "name": "Jump",
+                    "type": "Value",
+                    "id": "8d481f78-5afe-4812-a9cd-0bb0aee9f528",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Fish",
-                    "type": "Button",
-                    "id": "02771302-536f-48f9-925c-4c21d118cf40",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -301,19 +274,8 @@
                 },
                 {
                     "name": "",
-                    "id": "28f60485-182d-4f57-a945-f2b07dfb4ae4",
-                    "path": "<Keyboard>/space",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "bfe4c6ea-0893-4126-8543-5427b7dd4e9c",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -322,37 +284,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "0d10fe6b-64e5-4694-bb09-f7139c0a88ba",
-                    "path": "<Mouse>/rightButton",
+                    "name": "1D Axis",
+                    "id": "c323dd6c-175e-4428-9693-54ea3563a07a",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "AltFire",
-                    "isComposite": false,
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "0d399c38-9a86-46d5-bbce-5e5702de9a69",
-                    "path": "<Keyboard>/e",
+                    "name": "positive",
+                    "id": "e1e374d0-9ae2-4831-b36f-7c9651c4683b",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Bird",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "f391823b-9248-4486-8c64-b17fdd651c4c",
-                    "path": "<Keyboard>/q",
+                    "name": "negative",
+                    "id": "5db6ee4c-89b0-411e-97ce-24447b0a976e",
+                    "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Fish",
+                    "groups": "",
+                    "action": "Jump",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 }
             ]
         },
