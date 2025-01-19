@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     private Collider2D col;
 
     private PlayerControls input;
-    private InputAction move, jump, interact, fire;
+    private InputAction move, jump, interact, fire, altFire;
 
     public float moveSpeed = 5f;
     public float jumpForce = 100f;
@@ -33,14 +33,15 @@ public class Player : MonoBehaviour
     {
         move = input.Player.Move;
         jump = input.Player.Jump;
-        move.Enable();
-        jump.Enable();
+        fire = input.Player.Fire;
+        altFire = input.Player.AltFire;
+        interact = input.Player.Interact;
+        input.Enable();
     }
 
     private void OnDisable()
     {
-        move.Disable();
-        jump.Disable();
+        input.Disable();
     }
 
     // Start is called before the first frame update
@@ -69,6 +70,7 @@ public class Player : MonoBehaviour
         {
             rb.AddForce(Vector2.up * jumpForce * jumpVal, ForceMode2D.Impulse);
         }
-        print(jumpVal);
     }
+
+
 }
