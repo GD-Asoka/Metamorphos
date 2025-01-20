@@ -14,15 +14,15 @@ public class Player : MonoBehaviour
     private PlayerControls input;
     private InputAction move, jump, interact, fire, altFire, mouse;
 
-    public float moveSpeed = 5f;
-    public float jumpForce = 100f;
+    public float moveSpeed = 5f, jumpForce = 100f;
+    private float gravity;
     private Vector2 moveDirection;
-    public LayerMask groundMask;
+    public LayerMask groundMask, ceilingMask, platformMask;
 
     public Sprite druid, animal;
     public GameObject tree, vine;
 
-    private bool canJump = true;
+    private bool canJump = true, climbing = false;
     private float jumpVal;
 
     private void Awake()
@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
         input = new PlayerControls();
+        gravity = rb.gravityScale;
     }
 
     private void Start()
@@ -41,18 +42,23 @@ public class Player : MonoBehaviour
 
     private void AltFire(CallbackContext ctx)
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
-        clickPos.z = 0;
-        Instantiate(vine, clickPos, Quaternion.identity);
+        
     }
 
     private void Fire(CallbackContext ctx)
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
+        print(clickPos);
         clickPos.z = 0;
-        Instantiate(tree, clickPos, Quaternion.identity);
+        if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, groundMask))
+        {
+            Instantiate(tree, clickPos, Quaternion.identity);
+        }
+        else if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, ceilingMask))
+        {
+            Instantiate(vine, clickPos, Quaternion.identity);
+        }
     }
 
     private void OnEnable()
@@ -83,7 +89,14 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
+        if(climbing)
+        {
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+        }
+        else
+        {
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
+        }
     }
     private void Jump()
     {
@@ -95,11 +108,15 @@ public class Player : MonoBehaviour
 
     private void CheckJump()
     {
+        print(rb.velocity.y);
         jumpVal = jump.ReadValue<float>();
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundMask))
+        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, ceilingMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, platformMask))
         {
-            canJump = true;
-        }
+            if (MathF.Abs(rb.velocity.y) < 0.1f)
+            {
+                canJump = true;
+            }
+        }        
         else
         {
             canJump = false;
@@ -112,5 +129,31 @@ public class Player : MonoBehaviour
     private void CheckClicks()
     {
           
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Vine"))
+        {
+            climbing = true;
+            canJump = false;
+            rb.gravityScale = 0;
+        }
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Vine"))
+        {
+            climbing = true;
+            canJump = false;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Vine"))
+        {
+            climbing = false;
+            rb.gravityScale = gravity;
+        }
     }
 }
