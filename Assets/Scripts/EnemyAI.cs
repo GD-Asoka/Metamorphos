@@ -10,6 +10,10 @@ public class EnemyAI : MonoBehaviour
     private Rigidbody2D rb;
     public float moveSpeed = 5f, waitTime = 3f;
 
+    public Vector3 position;
+    public float hearingRange;
+    public float reactionThreshold;
+
     public enum State
     {
         PATROL,
@@ -87,16 +91,16 @@ public class EnemyAI : MonoBehaviour
             yield break;
         float moveDir;
         float distance = Vector3.Distance(transform.position, destination);
-        while(distance > 0.1f)
+        while(isPatrolling && distance > 0.1f)
         {
             moveDir = destination.x - transform.position.x > 0 ? 1 : -1;
             distance = Vector3.Distance(transform.position, destination);
-            if(distance < 0.1f && rb.velocity.x != 0)
+            if(distance <= 0.1f && rb.velocity.x != 0)
             {
                 rb.velocity = Vector2.zero;
                 transform.position = destination;
                 destination = destination == start.position ? end.position : start.position;
-                moveDir *= -1;
+                distance = Vector3.Distance(transform.position, destination);
                 yield return new WaitForSeconds(waitTime);
             }
             rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
@@ -117,4 +121,34 @@ public class EnemyAI : MonoBehaviour
             // Move towards the player
         }
     }
+
+    private void FlipSprite()
+    {
+        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+    }
+
+    public bool CanHearSound(SoundSource sound)
+    {
+        float distance = Vector3.Distance(position, sound.position);
+
+        // Check if the sound is within range
+        if (distance > hearingRange)
+            return false;
+
+        // Calculate perceived loudness
+        float perceivedLoudness = sound.loudness / (1 + distance * distance);
+
+        // Check if the perceived loudness meets the reaction threshold
+        return perceivedLoudness >= reactionThreshold;
+    }
+
+    public void ReactToSound(SoundSource sound)
+    {
+        if (CanHearSound(sound))
+        {
+            Debug.Log($"Enemy at {position} reacts to sound from {sound.position}");
+            // Implement reaction logic here
+        }
+    }
 }
+
