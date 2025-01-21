@@ -49,7 +49,6 @@ public class Player : MonoBehaviour
     {
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
-        print(clickPos);
         clickPos.z = 0;
         if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, groundMask))
         {
@@ -108,7 +107,6 @@ public class Player : MonoBehaviour
 
     private void CheckJump()
     {
-        print(rb.velocity.y);
         jumpVal = jump.ReadValue<float>();
         if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, ceilingMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, platformMask))
         {
