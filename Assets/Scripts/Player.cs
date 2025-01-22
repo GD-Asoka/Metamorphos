@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
+using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour
 {
@@ -25,6 +26,17 @@ public class Player : MonoBehaviour
     private bool canJump = true, climbing = false;
     private float jumpVal;
 
+    public Sprite[] fireTransform, waterTransform, waterElemental, fireElemental;
+    public float animTime = 1f, animSpeed = 0.1f;
+
+    public enum PlayerState
+    {
+        DRUID,
+        FIRE,
+        WATER
+    }
+    public PlayerState currentState;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();        
@@ -38,11 +50,90 @@ public class Player : MonoBehaviour
     {
         fire.performed += Fire;
         altFire.performed += AltFire;
+        interact.performed += Interact;
     }
 
     private void AltFire(CallbackContext ctx)
     {
-        
+        bool rand = Random.value > 0.5f ? true : false;
+        if(rand)
+            ChangeState(PlayerState.FIRE);
+        else
+            ChangeState(PlayerState.WATER);
+    }
+    private void Interact(CallbackContext ctx)
+    {
+        ChangeState(PlayerState.DRUID);
+    }
+
+    private void ChangeState(PlayerState newState)
+    {
+        currentState = newState;
+        switch(currentState)
+        {
+            case PlayerState.DRUID:
+                StartCoroutine(DruidTransform());
+                break;
+            case PlayerState.FIRE:
+                StartCoroutine(FireTransform());
+                break;
+            case PlayerState.WATER:
+                StartCoroutine(WaterTransform());
+                break;
+        }
+    }
+
+    private IEnumerator FireTransform()
+    {
+        float timeElapsed = 0;
+        while(timeElapsed <= animTime)
+        {
+            int index = 0;
+            sr.sprite = fireTransform[index];
+            index++;
+            if(index >= fireTransform.Length)
+                index = 0;
+            yield return new WaitForSeconds(animSpeed);
+            timeElapsed += animSpeed;
+        }
+        while(currentState == PlayerState.FIRE)
+        {
+            int index = 0;
+            sr.sprite = fireElemental[index];
+            index++;
+            if(index >= fireElemental.Length)
+                index = 0;
+            yield return new WaitForSeconds(animSpeed);
+        }
+
+    }
+    private IEnumerator WaterTransform()
+    {
+        float timeElapsed = 0;
+        while (timeElapsed <= animTime)
+        {
+            int index = 0;
+            sr.sprite = waterTransform[index];
+            index++;
+            if (index >= waterTransform.Length)
+                index = 0;
+            yield return new WaitForSeconds(animSpeed);
+            timeElapsed += animSpeed;
+        }
+        while (currentState == PlayerState.FIRE)
+        {
+            int index = 0;
+            sr.sprite = waterElemental[index];
+            index++;
+            if (index >= waterElemental.Length)
+                index = 0;
+            yield return new WaitForSeconds(animSpeed);
+        }
+    }
+    private IEnumerator DruidTransform()
+    {
+        sr.sprite = druid;
+        yield return null;
     }
 
     private void Fire(CallbackContext ctx)
