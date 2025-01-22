@@ -5,8 +5,15 @@ using UnityEngine;
 
 public class Plant : MonoBehaviour
 {
+    public Sprite[] vineSprites, treeSprites;
     public float maxScale, growthRate = 0.1f, animTime = 0.1f;
     private Vector3 actualSize;
+    private SpriteRenderer sr;
+    private void Awake()
+    {
+        sr = GetComponentInChildren<SpriteRenderer>();
+    }
+
     private void Start()
     {
         actualSize = transform.localScale;
@@ -23,5 +30,24 @@ public class Plant : MonoBehaviour
             yield return new WaitForSeconds(animTime);
         }
         transform.localScale = new Vector3(actualSize.x, actualSize.y, actualSize.z);
+        int index = 0;
+        while(gameObject.activeSelf)
+        {
+            if(gameObject.tag == "Vine")
+            {
+                sr.sprite = vineSprites[index];
+                index++;
+                if(index >= vineSprites.Length)
+                    index = 0;
+            }
+            else
+            {
+                sr.sprite = treeSprites[index];
+                index++;
+                if (index >= treeSprites.Length)
+                    index = 0;
+            }
+            yield return new WaitForSeconds(animTime);
+        }
     }
 }

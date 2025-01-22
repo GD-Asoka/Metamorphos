@@ -45,6 +45,7 @@ public class EnemyAI : MonoBehaviour
 
     private void ChangeState(State newState)
     {
+        FlipSprite();
         if(currentState == newState)
             return;
         else
@@ -126,7 +127,7 @@ public class EnemyAI : MonoBehaviour
 
     private void FlipSprite()
     {
-        if (rb.velocity.x >= 0)
+        if (rb.velocity.x > 0)
         {
             sr.flipX = false;
         }

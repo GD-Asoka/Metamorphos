@@ -81,9 +81,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152653269665ba84c93f4ee4650b308d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  vineSprites:
+  - {fileID: 1542415951, guid: 54bef9faf946cde4c9d9be31faa6767d, type: 3}
+  treeSprites: []
   maxScale: 0
   growthRate: 0.1
-  animTime: 0.1
+  animTime: 1
 --- !u!1 &7829478652468523174
 GameObject:
   m_ObjectHideFlags: 0

@@ -188,14 +188,14 @@ public class Player : MonoBehaviour
         {
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
         }
-        if(moveDirection.x >= 0)
-        {
-            sr.flipX = false;
-        }
-        else if(moveDirection.x < 0)
-        {
-            sr.flipX = true;
-        }
+        //if(moveDirection.x > 0)
+        //{
+        //    sr.flipX = false;
+        //}
+        //else if(moveDirection.x < 0)
+        //{
+        //    sr.flipX = true;
+        //}
     }
     private void Jump()
     {
@@ -236,7 +236,7 @@ public class Player : MonoBehaviour
         {
             climbing = true;
             canJump = false;
-            rb.gravityScale = 0;
+            //rb.gravityScale = 0;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -252,7 +252,7 @@ public class Player : MonoBehaviour
         if(collision.CompareTag("Vine"))
         {
             climbing = false;
-            rb.gravityScale = gravity;
+            //rb.gravityScale = gravity;
         }
     }
 }
