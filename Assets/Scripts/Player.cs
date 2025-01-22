@@ -41,6 +41,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();        
         sr = GetComponent<SpriteRenderer>();
+        sr.sprite = druid;
         col = GetComponent<Collider2D>();
         input = new PlayerControls();
         gravity = rb.gravityScale;
@@ -187,6 +188,14 @@ public class Player : MonoBehaviour
         {
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
         }
+        if(moveDirection.x >= 0)
+        {
+            sr.flipX = false;
+        }
+        else if(moveDirection.x < 0)
+        {
+            sr.flipX = true;
+        }
     }
     private void Jump()
     {
@@ -214,6 +223,7 @@ public class Player : MonoBehaviour
     private void CheckMovement()
     {
         moveDirection = move.ReadValue<Vector2>();
+
     }
     private void CheckClicks()
     {

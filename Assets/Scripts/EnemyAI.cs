@@ -8,6 +8,7 @@ public class EnemyAI : MonoBehaviour
     public Transform start, end;
     public Vector3 destination;
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
     public float moveSpeed = 5f, waitTime = 3f;
 
     public Vector3 position;
@@ -27,6 +28,7 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
         transform.position = start.position;
         destination = end.position;
     }
@@ -124,7 +126,14 @@ public class EnemyAI : MonoBehaviour
 
     private void FlipSprite()
     {
-        transform.localScale = new Vector3(transform.localScale.x * -1, transform.localScale.y, transform.localScale.z);
+        if (rb.velocity.x >= 0)
+        {
+            sr.flipX = false;
+        }
+        else if (rb.velocity.x < 0)
+        {
+            sr.flipX = true;
+        }
     }
 
     public bool CanHearSound(SoundSource sound)
