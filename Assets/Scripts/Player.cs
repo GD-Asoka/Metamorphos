@@ -86,9 +86,9 @@ public class Player : MonoBehaviour
     private IEnumerator FireTransform()
     {
         float timeElapsed = 0;
+        int index = 0;
         while(timeElapsed <= animTime)
         {
-            int index = 0;
             sr.sprite = fireTransform[index];
             index++;
             if(index >= fireTransform.Length)
@@ -96,9 +96,9 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(animSpeed);
             timeElapsed += animSpeed;
         }
+        index = 0;
         while(currentState == PlayerState.FIRE)
         {
-            int index = 0;
             sr.sprite = fireElemental[index];
             index++;
             if(index >= fireElemental.Length)
@@ -110,9 +110,9 @@ public class Player : MonoBehaviour
     private IEnumerator WaterTransform()
     {
         float timeElapsed = 0;
+            int index = 0;
         while (timeElapsed <= animTime)
         {
-            int index = 0;
             sr.sprite = waterTransform[index];
             index++;
             if (index >= waterTransform.Length)
@@ -120,9 +120,9 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(animSpeed);
             timeElapsed += animSpeed;
         }
-        while (currentState == PlayerState.FIRE)
+             index = 0;
+        while (currentState == PlayerState.WATER)
         {
-            int index = 0;
             sr.sprite = waterElemental[index];
             index++;
             if (index >= waterElemental.Length)
