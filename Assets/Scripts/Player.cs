@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
@@ -18,7 +19,7 @@ public class Player : MonoBehaviour
     public float moveSpeed = 5f, jumpForce = 100f, groundCheckDist = 2f;
     private float gravity;
     private Vector2 moveDirection;
-    public LayerMask groundMask, ceilingMask, platformMask;
+    public LayerMask groundMask, ceilingMask, platformMask, combinedMask;
 
     public Sprite druid, animal;
     public GameObject tree, vine;
@@ -142,11 +143,19 @@ public class Player : MonoBehaviour
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
         clickPos.z = 0;
-        if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, groundMask))
+        //if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, groundMask))
+        //{
+        //    Instantiate(tree, clickPos, Quaternion.identity);
+        //}
+        //else if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, ceilingMask))
+        //{
+        //    Instantiate(vine, clickPos, Quaternion.identity);
+        //}
+        if(Physics2D.OverlapPoint(clickPos, groundMask))
         {
             Instantiate(tree, clickPos, Quaternion.identity);
         }
-        else if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, ceilingMask))
+        else if(Physics2D.OverlapPoint(clickPos, ceilingMask))
         {
             Instantiate(vine, clickPos, Quaternion.identity);
         }
@@ -207,33 +216,37 @@ public class Player : MonoBehaviour
 
     private void CheckJump()
     {
+        print($"CanJump: {canJump}");
         Debug.DrawRay(transform.position, Vector2.down * groundCheckDist, Color.red);
+
         jumpVal = jump.ReadValue<float>();
-        if (Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, groundMask) || Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, ceilingMask) || Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, platformMask))
-        {
-            if (MathF.Abs(rb.velocity.y) < 0.1f)
-            {
-                canJump = true;
-            }
-            else
-            {
-                canJump = false;
-            }
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 10f);
-            if(transform.position.y > hit.point.y)
-            {
-                canJump = true;
-            }
-            else
-            {
-                canJump = false;
-            }
-        }        
-        else
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, groundCheckDist);
+        // Check if the raycast hit anything
+        if (hits.Length <= 0)
         {
             canJump = false;
+            return;
         }
+
+        foreach (RaycastHit2D h in hits)
+        {
+            canJump = false;
+            int hitLayer = hit.collider.gameObject.layer;
+            if (((1 << hitLayer) & combinedMask) != 0)
+            {
+                canJump = true;
+            }
+        }
+        // Get the layer of the hit object
+        // Exclude the Player layer (assuming Player layer index is known, e.g., 10)
+        //int playerLayer = LayerMask.NameToLayer("Player");
+        //LayerMask excludedMask = combinedMask & ~(1 << playerLayer);
+
+        // Check if the hit layer is in the combined mask
     }
+
+
     private void CheckMovement()
     {
         moveDirection = move.ReadValue<Vector2>();

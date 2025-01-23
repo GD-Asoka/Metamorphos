@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     public Vector3 destination;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-    public float moveSpeed = 5f, waitTime = 3f;
+    public float moveSpeed = 5f, waitTime = 3f, destCheckDist = 0.5f; 
 
     public Vector3 position;
     public float hearingRange;
@@ -32,15 +32,20 @@ public class EnemyAI : MonoBehaviour
         transform.position = start.position;
         destination = end.position;
     }
-
     private void Start()
     {
         SetState(State.PATROL);
+        Invoke(nameof(SetWaypoint), 0.5f);
     }
-
     private void Update()
     {
         ChangeState(newState);
+    }
+
+    private void SetWaypoint()
+    {
+        start.transform.position = new Vector2(start.transform.position.x, transform.position.y);
+        end.transform.position = new Vector2(end.transform.position.x, transform.position.y);
     }
 
     private void ChangeState(State newState)
@@ -94,11 +99,11 @@ public class EnemyAI : MonoBehaviour
             yield break;
         float moveDir;
         float distance = Vector3.Distance(transform.position, destination);
-        while(isPatrolling && distance > 0.1f)
+        while(isPatrolling && distance > destCheckDist)
         {
             moveDir = destination.x - transform.position.x > 0 ? 1 : -1;
             distance = Vector3.Distance(transform.position, destination);
-            if(distance <= 0.1f && rb.velocity.x != 0)
+            if(distance <= destCheckDist && rb.velocity.x != 0)
             {
                 rb.velocity = Vector2.zero;
                 transform.position = destination;
