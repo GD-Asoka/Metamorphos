@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
     private PlayerControls input;
     private InputAction move, jump, interact, fire, altFire, mouse;
 
-    public float moveSpeed = 5f, jumpForce = 100f;
+    public float moveSpeed = 5f, jumpForce = 100f, groundCheckDist = 2f;
     private float gravity;
     private Vector2 moveDirection;
     public LayerMask groundMask, ceilingMask, platformMask;
@@ -188,14 +188,14 @@ public class Player : MonoBehaviour
         {
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
         }
-        //if(moveDirection.x > 0)
-        //{
-        //    sr.flipX = false;
-        //}
-        //else if(moveDirection.x < 0)
-        //{
-        //    sr.flipX = true;
-        //}
+        if (moveDirection.x > 0)
+        {
+            sr.flipX = false;
+        }
+        else if (moveDirection.x < 0)
+        {
+            sr.flipX = true;
+        }
     }
     private void Jump()
     {
@@ -207,12 +207,26 @@ public class Player : MonoBehaviour
 
     private void CheckJump()
     {
+        Debug.DrawRay(transform.position, Vector2.down * groundCheckDist, Color.red);
         jumpVal = jump.ReadValue<float>();
-        if (Physics2D.Raycast(transform.position, Vector2.down, 1f, groundMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, ceilingMask) || Physics2D.Raycast(transform.position, Vector2.down, 1f, platformMask))
+        if (Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, groundMask) || Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, ceilingMask) || Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist, platformMask))
         {
             if (MathF.Abs(rb.velocity.y) < 0.1f)
             {
                 canJump = true;
+            }
+            else
+            {
+                canJump = false;
+            }
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 10f);
+            if(transform.position.y > hit.point.y)
+            {
+                canJump = true;
+            }
+            else
+            {
+                canJump = false;
             }
         }        
         else

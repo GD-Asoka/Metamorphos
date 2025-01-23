@@ -6,7 +6,7 @@ using UnityEngine;
 public class Plant : MonoBehaviour
 {
     public Sprite[] vineSprites, treeSprites;
-    public float maxScale, growthRate = 0.1f, animTime = 0.1f;
+    public float maxScale, growthRate = 0.1f, animTime = 0.1f, animRate = 0.1f;
     private Vector3 actualSize;
     private SpriteRenderer sr;
     private void Awake()
@@ -27,7 +27,7 @@ public class Plant : MonoBehaviour
         while(transform.localScale.y < maxScale)
         {
             transform.localScale += new Vector3((actualSize.x/actualSize.y) * growthRate, growthRate,0);
-            yield return new WaitForSeconds(animTime);
+            yield return new WaitForSeconds(animRate);
         }
         transform.localScale = new Vector3(actualSize.x, actualSize.y, actualSize.z);
         int index = 0;
