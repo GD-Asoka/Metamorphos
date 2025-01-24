@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     public Sprite druid, animal;
     public GameObject tree, vine;
 
-    private bool canJump = true, climbing = false;
+    private bool canJump = true, climbing = false, isJumping;
     private float jumpVal;
 
     public Sprite[] fireTransform, waterTransform, waterElemental, fireElemental;
@@ -168,10 +168,14 @@ public class Player : MonoBehaviour
         fire = input.Player.Fire;
         altFire = input.Player.AltFire;
         interact = input.Player.Interact;
+        jump.started += SetJump;
+        jump.canceled += SetJump;
         input.Enable();
     }
     private void OnDisable()
     {
+        jump.started -= SetJump;
+        jump.canceled -= SetJump;
         input.Disable();
     }
 
@@ -208,9 +212,22 @@ public class Player : MonoBehaviour
     }
     private void Jump()
     {
-        if (canJump)
+        if (canJump && isJumping)
         {
-            rb.AddForce(Vector2.up * jumpForce * jumpVal, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            isJumping = false;
+        }
+    }
+
+    private void SetJump(CallbackContext ctx)
+    {
+        if(ctx.started)
+        {
+            isJumping = true;
+        }
+        else if(ctx.canceled)
+        {
+            isJumping = false;
         }
     }
 
@@ -218,8 +235,7 @@ public class Player : MonoBehaviour
     {
         print($"CanJump: {canJump}");
         Debug.DrawRay(transform.position, Vector2.down * groundCheckDist, Color.red);
-
-        jumpVal = jump.ReadValue<float>();
+        //jumpVal = jump.ReadValue<float>();
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist);
         RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, Vector2.down, groundCheckDist);
         // Check if the raycast hit anything
@@ -228,22 +244,12 @@ public class Player : MonoBehaviour
             canJump = false;
             return;
         }
-
-        foreach (RaycastHit2D h in hits)
+        canJump = false;
+        int hitLayer = hit.collider.gameObject.layer;
+        if (((1 << hitLayer) & combinedMask) != 0)
         {
-            canJump = false;
-            int hitLayer = hit.collider.gameObject.layer;
-            if (((1 << hitLayer) & combinedMask) != 0)
-            {
-                canJump = true;
-            }
+            canJump = true;
         }
-        // Get the layer of the hit object
-        // Exclude the Player layer (assuming Player layer index is known, e.g., 10)
-        //int playerLayer = LayerMask.NameToLayer("Player");
-        //LayerMask excludedMask = combinedMask & ~(1 << playerLayer);
-
-        // Check if the hit layer is in the combined mask
     }
 
 

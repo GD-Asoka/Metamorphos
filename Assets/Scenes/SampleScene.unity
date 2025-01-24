@@ -1756,7 +1756,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       propertyPath: jumpForce
-      value: 1
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       propertyPath: combinedMask.m_Bits
