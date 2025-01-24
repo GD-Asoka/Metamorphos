@@ -9,11 +9,15 @@ public class EnemyAI : MonoBehaviour
     public Vector3 destination;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-    public float moveSpeed = 5f, waitTime = 3f, destCheckDist = 0.5f; 
+    public float moveSpeed = 5f, waitTime = 3f, destCheckDist = 0.5f, attackRate = 2f;
+    public GameObject fireball;
+    private Viewcone viewcone;
+    public bool canAttack = true;
 
     public Vector3 position;
     public float hearingRange;
     public float reactionThreshold;
+    private Player player;
 
     public enum State
     {
@@ -31,6 +35,8 @@ public class EnemyAI : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         transform.position = start.position;
         destination = end.position;
+        player = FindObjectOfType<Player>();
+        viewcone = GetComponentInChildren<Viewcone>();
     }
     private void Start()
     {
@@ -50,6 +56,7 @@ public class EnemyAI : MonoBehaviour
 
     private void ChangeState(State newState)
     {
+        print(currentState + " " + newState);
         FlipSprite();
         if(currentState == newState)
             return;
@@ -67,10 +74,10 @@ public class EnemyAI : MonoBehaviour
                 StartCoroutine(Patrol());
                 break;
             case State.CHASE:
-                Chase();
+                StartCoroutine(Chase(viewcone.lastPosition));
                 break;
             case State.ATTACK:
-                Attack();
+                StartCoroutine(Attack());
                 break;
         }
     }
@@ -115,23 +122,43 @@ public class EnemyAI : MonoBehaviour
             yield return null;
         }
     }
-    private void Attack()
+    private IEnumerator Attack()
     {
-        if(isAttacking)
+        rb.velocity = Vector2.zero;
+        while(isAttacking)
         {
-            // Attack the player
+            FlipSprite(true);
+            yield return null;
+            if (canAttack)
+            {
+                Instantiate(fireball, transform.position, Quaternion.identity);
+                yield return new WaitForSeconds(attackRate);
+            }
         }
     }
-    private void Chase()
+    private IEnumerator Chase(Vector2 target)
     {
-        if(isChasing)
+        rb.velocity = Vector2.zero;
+        var dir = target - (Vector2)transform.position;
+        while(isChasing)
         {
-            // Move towards the player
+            rb.velocity = dir.normalized * moveSpeed;
+            if (Vector2.Distance(transform.position, target) < 0.5f)
+            {
+                rb.velocity = Vector2.zero;
+                yield return new WaitForSeconds(waitTime);
+                newState = State.PATROL;
+            }
+            yield return null;
         }
     }
 
-    private void FlipSprite()
+    private void FlipSprite(bool lookAtPlayer = false)
     {
+        if(lookAtPlayer)
+        {
+            sr.flipX = player.transform.position.x - transform.position.x > 0 ? false : true;
+        }
         if (rb.velocity.x > 0)
         {
             sr.flipX = false;
@@ -139,6 +166,14 @@ public class EnemyAI : MonoBehaviour
         else if (rb.velocity.x < 0)
         {
             sr.flipX = true;
+        }
+        if(sr.flipX)
+        {
+            viewcone.transform.localScale = new Vector3(-1f, 1, 1);
+        }
+        else
+        {
+            viewcone.transform.localScale = new Vector3(1f, 1, 1);
         }
     }
 
