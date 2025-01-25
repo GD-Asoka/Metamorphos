@@ -100,9 +100,9 @@ TextureImporter:
       name: Forest_001_a_0
       rect:
         serializedVersion: 2
-        x: 220
-        y: 11
-        width: 666
+        x: 224
+        y: 4
+        width: 659
         height: 790
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -113,6 +113,27 @@ TextureImporter:
       bones: []
       spriteID: 97b37c4f4371fec41934d95a8c2e5f9a
       internalID: -1803045612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_001_a_1
+      rect:
+        serializedVersion: 2
+        x: 474
+        y: 0
+        width: 59
+        height: 5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47ee478e97f4efa42a3f5d853b83786e
+      internalID: 1006101804
       vertices: []
       indices: 
       edges: []
@@ -129,6 +150,7 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       Forest_001_a_0: -1803045612
+      Forest_001_a_1: 1006101804
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

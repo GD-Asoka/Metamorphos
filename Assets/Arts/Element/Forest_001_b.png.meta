@@ -100,10 +100,10 @@ TextureImporter:
       name: Forest_001_b_0
       rect:
         serializedVersion: 2
-        x: 220
-        y: 10
-        width: 661
-        height: 783
+        x: 224
+        y: 7
+        width: 658
+        height: 784
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

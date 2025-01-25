@@ -95,7 +95,49 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: SpriteSheet_enemy_idolOrWalk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 352
+        width: 384
+        height: 352
+      alignment: 9
+      pivot: {x: 0.3356874, y: 0.2785733}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0df855abef611c47b770c5ab1b91972
+      internalID: -837100888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_enemy_idolOrWalk_1
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 352
+        width: 384
+        height: 352
+      alignment: 9
+      pivot: {x: 0.33890915, y: 0.2785734}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b75ee6b7caecf4b4289a411e05851bf0
+      internalID: -359273823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -106,7 +148,9 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      SpriteSheet_enemy_idolOrWalk_0: -837100888
+      SpriteSheet_enemy_idolOrWalk_1: -359273823
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
