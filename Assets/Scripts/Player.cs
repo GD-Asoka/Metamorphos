@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private Collider2D col;
 
     private PlayerControls input;
-    private InputAction move, jump, interact, fire, altFire, mouse;
+    private InputAction move, jump, interact, fire, altFire, mouse, bird, fish;
 
     public float moveSpeed = 5f, jumpForce = 100f, groundCheckDist = 2f;
     private float gravity;
@@ -22,13 +22,16 @@ public class Player : MonoBehaviour
     public LayerMask groundMask, ceilingMask, platformMask, combinedMask;
 
     public Sprite druid, animal;
-    public GameObject tree, vine;
+    public GameObject tree, vine, birdPrefab, fishPrefab;
+    public bool canSummon = true;
+    public int druidPower = 5;
 
     private bool canJump = true, climbing = false, isJumping;
     private float jumpVal;
 
     public Sprite[] fireTransform, waterTransform, waterElemental, fireElemental;
     public float animTime = 1f, animSpeed = 0.1f;
+    public static event Action Interacted;
 
     public enum PlayerState
     {
@@ -52,20 +55,40 @@ public class Player : MonoBehaviour
     {
         fire.performed += Fire;
         altFire.performed += AltFire;
+        fish.performed += Fish;
+        bird.performed += Bird;
         interact.performed += Interact;
+    }
+
+    private void Bird(CallbackContext ctx)
+    {
+        if(canSummon)
+        {
+            Instantiate(birdPrefab, transform.position + new Vector3(0,col.bounds.extents.y,0), Quaternion.identity);
+            canSummon = false;
+        }
+    }
+    private void Fish(CallbackContext ctx)
+    {
+        if(canSummon)
+        {
+            Instantiate(fishPrefab, transform.position + new Vector3(0, col.bounds.extents.y, 0), Quaternion.identity);
+            canSummon = false;
+        }
     }
 
     private void AltFire(CallbackContext ctx)
     {
-        bool rand = Random.value > 0.5f ? true : false;
-        if(rand)
-            ChangeState(PlayerState.FIRE);
-        else
-            ChangeState(PlayerState.WATER);
+        //bool rand = Random.value > 0.5f ? true : false;
+        //if(rand)
+        //    ChangeState(PlayerState.FIRE);
+        //else
+        //    ChangeState(PlayerState.WATER);
     }
     private void Interact(CallbackContext ctx)
     {
-        ChangeState(PlayerState.DRUID);
+        //ChangeState(PlayerState.DRUID);
+        Interacted?.Invoke();
     }
 
     private void ChangeState(PlayerState newState)
@@ -107,7 +130,6 @@ public class Player : MonoBehaviour
                 index = 0;
             yield return new WaitForSeconds(animSpeed);
         }
-
     }
     private IEnumerator WaterTransform()
     {
@@ -168,6 +190,8 @@ public class Player : MonoBehaviour
         fire = input.Player.Fire;
         altFire = input.Player.AltFire;
         interact = input.Player.Interact;
+        bird = input.Player.Bird;
+        fish = input.Player.Fish;
         jump.started += SetJump;
         jump.canceled += SetJump;
         input.Enable();

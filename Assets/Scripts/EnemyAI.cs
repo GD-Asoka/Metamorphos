@@ -155,10 +155,12 @@ public class EnemyAI : MonoBehaviour
 
     private void FlipSprite(bool lookAtPlayer = false)
     {
-        if(lookAtPlayer)
-        {
-            sr.flipX = player.transform.position.x - transform.position.x > 0 ? false : true;
-        }
+        //if(lookAtPlayer)
+        //{
+        //    sr.flipX = player.transform.position.x - transform.position.x > 0 ? false : true;
+        //}
+        if (rb.velocity.y != 0)
+            return;
         if (rb.velocity.x > 0)
         {
             sr.flipX = false;
@@ -166,6 +168,10 @@ public class EnemyAI : MonoBehaviour
         else if (rb.velocity.x < 0)
         {
             sr.flipX = true;
+        }
+        else
+        {
+            return;
         }
         if(sr.flipX)
         {
