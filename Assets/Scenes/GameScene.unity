@@ -1935,11 +1935,15 @@ PrefabInstance:
     - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       propertyPath: druid
       value: 
-      objectReference: {fileID: 21300000, guid: e195ecd215fa87841b31fa8663949eef, type: 3}
+      objectReference: {fileID: -532277725, guid: 5e325609e21cb1f4c8b08c6cf5f78316, type: 3}
     - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       propertyPath: jumpForce
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
+      propertyPath: summonPrefab
+      value: 
+      objectReference: {fileID: 727705517229311687, guid: 69b068324ffc31c4eb7a21f63c287066, type: 3}
     - target: {fileID: 1716964188433024028, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       propertyPath: combinedMask.m_Bits
       value: 200

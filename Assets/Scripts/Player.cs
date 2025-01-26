@@ -12,6 +12,16 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D col;
+    private Animator anim;
+    private readonly int idleHash = Animator.StringToHash("idling");
+    private readonly int walkHash = Animator.StringToHash("walking");
+    private readonly int jumpHash = Animator.StringToHash("jumping");
+    private readonly int climbHash = Animator.StringToHash("climbing");
+    private readonly int summonHash = Animator.StringToHash("summoning");
+    private readonly int fireHash = Animator.StringToHash("fire");
+    private readonly int waterHash = Animator.StringToHash("water");
+    private readonly int birdHash = Animator.StringToHash("bird");
+    private readonly int fishHash = Animator.StringToHash("fish");
 
     private PlayerControls input;
     private InputAction move, jump, interact, fire, altFire, mouse, bird, fish;
@@ -22,11 +32,12 @@ public class Player : MonoBehaviour
     public LayerMask groundMask, ceilingMask, platformMask, combinedMask;
 
     public Sprite druid, animal;
-    public GameObject tree, vine, birdPrefab, fishPrefab;
+    public GameObject tree, vine, summonPrefab;
+    private PlayerGhost ghost = null;
     public bool canSummon = true;
     public int druidPower = 5;
 
-    private bool canJump = true, climbing = false, isJumping;
+    private bool canJump = true, climbing = false, isJumping, canMove = true;
     private float jumpVal;
 
     public Sprite[] fireTransform, waterTransform, waterElemental, fireElemental;
@@ -45,8 +56,9 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();        
         sr = GetComponent<SpriteRenderer>();
-        sr.sprite = druid;
         col = GetComponent<Collider2D>();
+        anim = GetComponent<Animator>();
+        sr.sprite = druid;
         input = new PlayerControls();
         gravity = rb.gravityScale;
     }
@@ -55,40 +67,46 @@ public class Player : MonoBehaviour
     {
         fire.performed += Fire;
         altFire.performed += AltFire;
-        fish.performed += Fish;
-        bird.performed += Bird;
+        fish.performed += FishTransform;
+        bird.performed += BirdTransform;
         interact.performed += Interact;
+        ChangeAnimation(idleHash);
     }
-
-    private void Bird(CallbackContext ctx)
+    private void Fire(CallbackContext ctx)
     {
-        if(canSummon)
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
+        clickPos.z = 0;
+        ChangeAnimation(summonHash);
+        if (Physics2D.OverlapPoint(clickPos, groundMask))
         {
-            Instantiate(birdPrefab, transform.position + new Vector3(0,col.bounds.extents.y,0), Quaternion.identity);
-            canSummon = false;
+            Instantiate(tree, clickPos, Quaternion.identity);
         }
-    }
-    private void Fish(CallbackContext ctx)
-    {
-        if(canSummon)
+        else if (Physics2D.OverlapPoint(clickPos, ceilingMask))
         {
-            Instantiate(fishPrefab, transform.position + new Vector3(0, col.bounds.extents.y, 0), Quaternion.identity);
-            canSummon = false;
+            Instantiate(vine, clickPos, Quaternion.identity);
         }
+        ChangeAnimation(idleHash);
     }
-
     private void AltFire(CallbackContext ctx)
     {
         //bool rand = Random.value > 0.5f ? true : false;
-        //if(rand)
+        //if (rand)
         //    ChangeState(PlayerState.FIRE);
         //else
         //    ChangeState(PlayerState.WATER);
     }
+    private void FishTransform(CallbackContext ctx)
+    {
+            ChangeState(PlayerState.WATER);
+    }
+    private void BirdTransform(CallbackContext ctx)
+    {
+            ChangeState(PlayerState.FIRE);
+    }
     private void Interact(CallbackContext ctx)
     {
         //ChangeState(PlayerState.DRUID);
-        Interacted?.Invoke();
     }
 
     private void ChangeState(PlayerState newState)
@@ -107,11 +125,18 @@ public class Player : MonoBehaviour
                 break;
         }
     }
-
+    private void SummonGhost()
+    {
+        ghost = Instantiate(summonPrefab, transform.position, Quaternion.identity).GetComponent<PlayerGhost>();
+    }
     private IEnumerator FireTransform()
     {
+        print(col.bounds.extents.y);
+        SummonGhost();
         float timeElapsed = 0;
         int index = 0;
+        rb.isKinematic = true;
+        transform.position = new Vector3(transform.position.x, transform.position.x + col.bounds.extents.y, transform.position.z);
         while(timeElapsed <= animTime)
         {
             sr.sprite = fireTransform[index];
@@ -121,6 +146,8 @@ public class Player : MonoBehaviour
             yield return new WaitForSeconds(animSpeed);
             timeElapsed += animSpeed;
         }
+        rb.isKinematic = false;
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX;
         index = 0;
         while(currentState == PlayerState.FIRE)
         {
@@ -158,31 +185,19 @@ public class Player : MonoBehaviour
     {
         sr.sprite = druid;
         yield return null;
-    }
-
-    private void Fire(CallbackContext ctx)
+    }    
+    private void ChangeAnimation(int animToTrigger)
     {
-        Vector2 mousePos = Mouse.current.position.ReadValue();
-        Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
-        clickPos.z = 0;
-        //if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, groundMask))
-        //{
-        //    Instantiate(tree, clickPos, Quaternion.identity);
-        //}
-        //else if(Physics2D.Raycast(clickPos, Vector3.forward, 100f, ceilingMask))
-        //{
-        //    Instantiate(vine, clickPos, Quaternion.identity);
-        //}
-        if(Physics2D.OverlapPoint(clickPos, groundMask))
-        {
-            Instantiate(tree, clickPos, Quaternion.identity);
-        }
-        else if(Physics2D.OverlapPoint(clickPos, ceilingMask))
-        {
-            Instantiate(vine, clickPos, Quaternion.identity);
-        }
+        anim.SetBool(walkHash, false);
+        anim.SetBool(jumpHash, false);
+        anim.SetBool(climbHash, false);
+        anim.SetBool(summonHash, false);
+        anim.SetBool(fireHash, false);
+        anim.SetBool(waterHash, false);
+        anim.SetBool(birdHash, false);
+        anim.SetBool(fishHash, false);
+        anim.SetBool(animToTrigger, true);
     }
-
     private void OnEnable()
     {
         move = input.Player.Move;
@@ -207,22 +222,26 @@ public class Player : MonoBehaviour
     {        
         CheckJump();
         CheckMovement();
-        CheckClicks();
     }
     private void FixedUpdate()
     {
-        Move();
-        Jump();
+        if(canMove)
+        {
+            Move();
+            Jump();
+        }
     }
 
     private void Move()
     {
         if(climbing)
         {
+            anim.SetBool(climbHash, true);
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
         }
         else
         {
+            anim.SetBool(walkHash, true);
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
         }
         if (moveDirection.x > 0)
@@ -238,6 +257,7 @@ public class Player : MonoBehaviour
     {
         if (canJump && isJumping)
         {
+            anim.SetBool(jumpHash, true);
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isJumping = false;
         }
@@ -257,7 +277,6 @@ public class Player : MonoBehaviour
 
     private void CheckJump()
     {
-        print($"CanJump: {canJump}");
         Debug.DrawRay(transform.position, Vector2.down * groundCheckDist, Color.red);
         //jumpVal = jump.ReadValue<float>();
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDist);
@@ -281,10 +300,6 @@ public class Player : MonoBehaviour
     {
         moveDirection = move.ReadValue<Vector2>();
 
-    }
-    private void CheckClicks()
-    {
-          
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
