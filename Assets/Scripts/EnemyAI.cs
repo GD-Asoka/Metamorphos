@@ -56,7 +56,6 @@ public class EnemyAI : MonoBehaviour
 
     private void ChangeState(State newState)
     {
-        print(currentState + " " + newState);
         FlipSprite();
         if(currentState == newState)
             return;

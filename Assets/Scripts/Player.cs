@@ -22,11 +22,15 @@ public class Player : MonoBehaviour
     private readonly int waterHash = Animator.StringToHash("water");
     private readonly int birdHash = Animator.StringToHash("bird");
     private readonly int fishHash = Animator.StringToHash("fish");
+    private readonly int flipxHash = Animator.StringToHash("flipx");
+    private readonly int velocityHash = Animator.StringToHash("velocity");
+    private bool flipX;
 
     private PlayerControls input;
     private InputAction move, jump, interact, fire, altFire, mouse, bird, fish;
 
     public float moveSpeed = 5f, jumpForce = 100f, groundCheckDist = 2f;
+    public Transform groundCheck;
     private float gravity;
     private Vector2 moveDirection;
     public LayerMask groundMask, ceilingMask, platformMask, combinedMask;
@@ -136,7 +140,7 @@ public class Player : MonoBehaviour
         float timeElapsed = 0;
         int index = 0;
         rb.isKinematic = true;
-        transform.position = new Vector3(transform.position.x, transform.position.x + col.bounds.extents.y, transform.position.z);
+        transform.position = new Vector3(transform.position.x, transform.position.y + col.bounds.extents.y, transform.position.z);
         while(timeElapsed <= animTime)
         {
             sr.sprite = fireTransform[index];
@@ -184,10 +188,23 @@ public class Player : MonoBehaviour
     private IEnumerator DruidTransform()
     {
         sr.sprite = druid;
+        ghost.gameObject.SetActive(false);
+        ghost = null;
+
         yield return null;
     }    
+    private void UpdateAnimation()
+    {
+        flipX = rb.velocity.x < 0 ? true : false;
+        if (anim.GetBool(flipxHash) != flipX)        
+            anim.SetBool(flipxHash, flipX);            
+        
+        if(anim.GetFloat(velocityHash) != rb.velocity.x)
+            anim.SetFloat(velocityHash, rb.velocity.x);
+    }
     private void ChangeAnimation(int animToTrigger)
     {
+        anim.SetBool(idleHash, false);
         anim.SetBool(walkHash, false);
         anim.SetBool(jumpHash, false);
         anim.SetBool(climbHash, false);
@@ -236,21 +253,26 @@ public class Player : MonoBehaviour
     {
         if(climbing)
         {
-            anim.SetBool(climbHash, true);
+            ChangeAnimation(climbHash);
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
         }
         else
         {
-            anim.SetBool(walkHash, true);
+            if(rb.velocity.x != 0)
+                ChangeAnimation(walkHash);
+            else
+                ChangeAnimation(idleHash);
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
         }
         if (moveDirection.x > 0)
         {
-            sr.flipX = false;
+            //sr.flipX = false;
+            flipX = false;
         }
         else if (moveDirection.x < 0)
         {
-            sr.flipX = true;
+            flipX = true;
+            //sr.flipX = true;
         }
     }
     private void Jump()
@@ -262,7 +284,6 @@ public class Player : MonoBehaviour
             isJumping = false;
         }
     }
-
     private void SetJump(CallbackContext ctx)
     {
         if(ctx.started)
