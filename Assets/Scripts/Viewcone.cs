@@ -14,7 +14,6 @@ public class Viewcone : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            print("hi");
             parent.newState = EnemyAI.State.ATTACK;
         }
     }
