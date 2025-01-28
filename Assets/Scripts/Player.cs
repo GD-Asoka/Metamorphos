@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
     private readonly int fishHash = Animator.StringToHash("fish");
     private readonly int attackHash = Animator.StringToHash("attacking");
     private readonly int splashHash = Animator.StringToHash("splashing");
-    private readonly int hidingHash = Animator.StringToHash("hiding");
+    private readonly int hideHash = Animator.StringToHash("hiding");
     private int currentHash;
     private bool flipX;
 
@@ -44,9 +44,7 @@ public class Player : MonoBehaviour
     public int druidPower = 5;
     public ParticleSystem fireParticles, waterParticles;
 
-    private bool canJump = true, climbing, isJumping, canMove = true, canHide, isHiding, canSummon = true, isGrounded, isAnimating;
-
-    public Sprite[] fireTransform, waterTransform, waterElemental, fireElemental;
+    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, canSummon = true, isGrounded, isAnimating;
     public float animTime = 1f, animSpeed = 0.1f, summonTime = 5f;
 
     public enum PlayerState
@@ -117,16 +115,16 @@ public class Player : MonoBehaviour
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
         clickPos.z = 0;
-        ChangeAnimation(summonHash);
-        if (Physics2D.OverlapPoint(clickPos, groundMask))
+        if (Physics2D.OverlapPoint(clickPos, groundMask) && !isAnimating)
         {
             Instantiate(tree, clickPos, Quaternion.identity);
+            QueueAnimation(summonHash, idleHash);
         }
-        else if (Physics2D.OverlapPoint(clickPos, ceilingMask))
+        else if (Physics2D.OverlapPoint(clickPos, ceilingMask) && !isAnimating)
         {
+            QueueAnimation(summonHash, idleHash);
             Instantiate(vine, clickPos, Quaternion.identity);
         }
-        ChangeAnimation(idleHash);
     }
     private void AltFire(CallbackContext ctx)
     {
@@ -142,6 +140,7 @@ public class Player : MonoBehaviour
     }
     private void Interact(CallbackContext ctx)
     {
+        print(currentState);
         if (currentState == PlayerState.FIRE)
         {
             ChangeAnimation(attackHash);
@@ -170,6 +169,10 @@ public class Player : MonoBehaviour
     }
     private void ChangeState(PlayerState newState)
     {
+        if(isAnimating)
+            return;
+        if(currentState == newState)
+            return;
         currentState = newState;
         switch(currentState)
         {
@@ -232,10 +235,13 @@ public class Player : MonoBehaviour
         else
             transform.localScale = new Vector3(1, 1, 1);
     }
-    private void ChangeAnimation(int animToTrigger, bool priority = false)
+    private void ChangeAnimation(int animToTrigger)
     {
         if (animToTrigger == currentHash || isAnimating)
             return;
+        if(currentState != PlayerState.DRUID && (animToTrigger == idleHash || animToTrigger == walkHash || animToTrigger == jumpHash || animToTrigger == climbHash || animToTrigger == hideHash))
+            return;
+        
         currentHash = animToTrigger;        
         anim.SetBool(idleHash, false);
         anim.SetBool(walkHash, false);
@@ -261,16 +267,18 @@ public class Player : MonoBehaviour
         anim.SetBool(birdHash, false);
         anim.SetBool(fishHash, false);
         anim.SetBool(initialAnimHash, true);
+        currentHash = initialAnimHash;
         yield return new WaitForSeconds(animTime);
+        anim.SetBool(initialAnimHash, false);
         anim.SetBool(finalAnimHash, true);
+        currentHash = finalAnimHash;
         isAnimating = false;
-        ChangeAnimation(idleHash);
     }
     private void Move()
     {
         if (currentState == PlayerState.DRUID)
         {
-            if (climbing)
+            if (isClimbing)
             {
                 ChangeAnimation(climbHash);
                 rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
@@ -306,12 +314,12 @@ public class Player : MonoBehaviour
         }
         else if(isJumping && currentState == PlayerState.FIRE)
         {
-            rb.AddForce(Vector2.up * jumpForce * 1.5f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             isJumping = false;
         }
         else if (isJumping && currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.one * jumpForce * 0.5f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.one * jumpForce, ForceMode2D.Impulse);
             isJumping = false;
         }
     }
@@ -347,6 +355,9 @@ public class Player : MonoBehaviour
         {
             canJump = false;
             isGrounded = false;
+        }
+        if(!isGrounded && !isClimbing && currentState == PlayerState.DRUID)
+        {
             ChangeAnimation(jumpHash);
         }
     }
@@ -361,17 +372,13 @@ public class Player : MonoBehaviour
         {
             flipX = true;
         }
-        else
-        {
-            ChangeAnimation(idleHash);
-        }
         UpdateAnimation();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
-            climbing = true;
+            isClimbing = true;
             canJump = false;
             canHide = true;
             ChangeAnimation(climbHash);
@@ -385,7 +392,7 @@ public class Player : MonoBehaviour
     {
         if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
-            climbing = true;
+            isClimbing = true;
             canJump = false;
             canHide = true;
             ChangeAnimation(climbHash);
@@ -399,18 +406,18 @@ public class Player : MonoBehaviour
     {
         if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
-            climbing = false;
+            isClimbing = false;
             canHide = false;
         }
         if (collision.CompareTag("Tree") && currentState == PlayerState.DRUID)
         {
             canHide = false;
         }
-        if(isGrounded)
+        if(isGrounded && currentState == PlayerState.DRUID)
         {
             ChangeAnimation(idleHash);
         }
-        else
+        else if(!isGrounded && currentState == PlayerState.DRUID)
         {
             ChangeAnimation(jumpHash);
         }
@@ -450,14 +457,11 @@ public class Player : MonoBehaviour
         canMove = false;
         canJump = false;
         canSummon = false;
-        ChangeAnimation(hidingHash);
-        var alpha = sr.color.a;
-        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, sr.color.a * 0.5f);
+        ChangeAnimation(hideHash);
         while(isHiding && canHide)
         {
             yield return null;
         }
-        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, alpha);
         canMove = true;
         canJump = true;
         canSummon = true;
