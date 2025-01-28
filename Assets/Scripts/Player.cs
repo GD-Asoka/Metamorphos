@@ -22,8 +22,6 @@ public class Player : MonoBehaviour
     private readonly int waterHash = Animator.StringToHash("water");
     private readonly int birdHash = Animator.StringToHash("bird");
     private readonly int fishHash = Animator.StringToHash("fish");
-    private readonly int flipxHash = Animator.StringToHash("flipx");
-    private readonly int velocityHash = Animator.StringToHash("velocity");
     private bool flipX;
 
     private PlayerControls input;
@@ -31,7 +29,7 @@ public class Player : MonoBehaviour
 
     public float moveSpeed = 5f, jumpForce = 100f, groundCheckDist = 2f;
     public Transform groundCheck;
-    private float gravity;
+    public float druidG, birdG, fishG;
     private Vector2 moveDirection;
     public LayerMask groundMask, ceilingMask, platformMask, combinedMask;
 
@@ -40,6 +38,7 @@ public class Player : MonoBehaviour
     private PlayerGhost ghost = null;
     public bool canSummon = true;
     public int druidPower = 5;
+    public ParticleSystem fireParticles, waterParticles;
 
     private bool canJump = true, climbing = false, isJumping, canMove = true;
     private float jumpVal;
@@ -64,7 +63,7 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         sr.sprite = druid;
         input = new PlayerControls();
-        gravity = rb.gravityScale;
+        druidG = rb.gravityScale;
     }
 
     private void Start()
@@ -94,11 +93,7 @@ public class Player : MonoBehaviour
     }
     private void AltFire(CallbackContext ctx)
     {
-        //bool rand = Random.value > 0.5f ? true : false;
-        //if (rand)
-        //    ChangeState(PlayerState.FIRE);
-        //else
-        //    ChangeState(PlayerState.WATER);
+        FlipTime();
     }
     private void FishTransform(CallbackContext ctx)
     {
@@ -110,7 +105,29 @@ public class Player : MonoBehaviour
     }
     private void Interact(CallbackContext ctx)
     {
-        //ChangeState(PlayerState.DRUID);
+        if(currentState == PlayerState.DRUID)
+        {
+
+        }
+        else if(currentState == PlayerState.FIRE)
+        {
+            
+        }
+        else if(currentState == PlayerState.WATER)
+        {
+            
+        }
+    }
+    private void FlipTime()
+    {
+        if(Time.timeScale < 1)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Time.timeScale = 0.5f;
+        }
     }
 
     private void ChangeState(PlayerState newState)
@@ -119,12 +136,15 @@ public class Player : MonoBehaviour
         switch(currentState)
         {
             case PlayerState.DRUID:
+                rb.gravityScale = druidG;
                 StartCoroutine(DruidTransform());
                 break;
             case PlayerState.FIRE:
+                rb.gravityScale = birdG;
                 StartCoroutine(FireTransform());
                 break;
             case PlayerState.WATER:
+                rb.gravityScale = fishG;
                 StartCoroutine(WaterTransform());
                 break;
         }
@@ -135,72 +155,33 @@ public class Player : MonoBehaviour
     }
     private IEnumerator FireTransform()
     {
-        print(col.bounds.extents.y);
         SummonGhost();
-        float timeElapsed = 0;
-        int index = 0;
-        rb.isKinematic = true;
-        transform.position = new Vector3(transform.position.x, transform.position.y + col.bounds.extents.y, transform.position.z);
-        while(timeElapsed <= animTime)
-        {
-            sr.sprite = fireTransform[index];
-            index++;
-            if(index >= fireTransform.Length)
-                index = 0;
-            yield return new WaitForSeconds(animSpeed);
-            timeElapsed += animSpeed;
-        }
-        rb.isKinematic = false;
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX;
-        index = 0;
-        while(currentState == PlayerState.FIRE)
-        {
-            sr.sprite = fireElemental[index];
-            index++;
-            if(index >= fireElemental.Length)
-                index = 0;
-            yield return new WaitForSeconds(animSpeed);
-        }
+        transform.position += new Vector3(0, col.bounds.extents.y * 2, 0);
+        ChangeAnimation(waterHash);
+        yield return new WaitForSeconds(animTime);
+        ChangeAnimation(fishHash);
+        rb.gravityScale = 0.5f;
     }
     private IEnumerator WaterTransform()
     {
-        float timeElapsed = 0;
-            int index = 0;
-        while (timeElapsed <= animTime)
-        {
-            sr.sprite = waterTransform[index];
-            index++;
-            if (index >= waterTransform.Length)
-                index = 0;
-            yield return new WaitForSeconds(animSpeed);
-            timeElapsed += animSpeed;
-        }
-             index = 0;
-        while (currentState == PlayerState.WATER)
-        {
-            sr.sprite = waterElemental[index];
-            index++;
-            if (index >= waterElemental.Length)
-                index = 0;
-            yield return new WaitForSeconds(animSpeed);
-        }
+        ChangeAnimation(waterHash);
+        yield return new WaitForSeconds(animTime);
+        ChangeAnimation(fishHash);
     }
     private IEnumerator DruidTransform()
     {
         sr.sprite = druid;
         ghost.gameObject.SetActive(false);
         ghost = null;
-
         yield return null;
     }    
     private void UpdateAnimation()
     {
         flipX = rb.velocity.x < 0 ? true : false;
-        if (anim.GetBool(flipxHash) != flipX)        
-            anim.SetBool(flipxHash, flipX);            
-        
-        if(anim.GetFloat(velocityHash) != rb.velocity.x)
-            anim.SetFloat(velocityHash, rb.velocity.x);
+        if (flipX)
+            transform.localScale = new Vector3(-1, 1, 1);
+        else
+            transform.localScale = new Vector3(1, 1, 1);
     }
     private void ChangeAnimation(int animToTrigger)
     {
@@ -251,28 +232,37 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
-        if(climbing)
+        if (currentState == PlayerState.DRUID)
         {
-            ChangeAnimation(climbHash);
-            rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+            if (climbing)
+            {
+                ChangeAnimation(climbHash);
+                rb.velocity = new Vector2(moveDirection.x * moveSpeed, moveDirection.y * moveSpeed);
+            }
+            else
+            {
+                if(rb.velocity.x != 0)
+                    ChangeAnimation(walkHash);
+                else
+                    ChangeAnimation(idleHash);
+                rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
+                UpdateAnimation();
+            }            
+        }
+        else if(currentState == PlayerState.FIRE)
+        {
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
+            UpdateAnimation();
+        }
+        else if (currentState == PlayerState.WATER)
+        {
+            rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
+            UpdateAnimation();
         }
         else
         {
-            if(rb.velocity.x != 0)
-                ChangeAnimation(walkHash);
-            else
-                ChangeAnimation(idleHash);
             rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
-        }
-        if (moveDirection.x > 0)
-        {
-            //sr.flipX = false;
-            flipX = false;
-        }
-        else if (moveDirection.x < 0)
-        {
-            flipX = true;
-            //sr.flipX = true;
+            UpdateAnimation();
         }
     }
     private void Jump()
@@ -325,7 +315,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Vine"))
+        if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
             climbing = true;
             canJump = false;
@@ -334,7 +324,7 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if(collision.CompareTag("Vine"))
+        if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
             climbing = true;
             canJump = false;
@@ -342,10 +332,32 @@ public class Player : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.CompareTag("Vine"))
+        if(collision.CompareTag("Vine") && currentState == PlayerState.DRUID)
         {
             climbing = false;
             //rb.gravityScale = gravity;
         }
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        ITriggerable hit;
+        if (collision.gameObject.TryGetComponent(out hit))
+        {
+            hit.Trigger();
+        }
+        Explode();
+    }
+    private IEnumerator Explode()
+    {
+        if(currentState == PlayerState.FIRE)
+        {
+            fireParticles.Play();
+        }
+        else if(currentState == PlayerState.WATER)
+        {
+            waterParticles.Play();
+        }
+        yield return new WaitForSeconds(0.5f);
+        ChangeState(PlayerState.DRUID);
     }
 }

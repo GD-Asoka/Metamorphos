@@ -1,0 +1,283 @@
+fileFormatVersion: 2
+guid: 642baf0d9862cc54091ad1b9c53037d3
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_0
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 1569
+        width: 211
+        height: 61
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05aee74f6cc14534f96450f745becafc
+      internalID: 671449241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_1
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 1318
+        width: 249
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e180b4f992aa27942b12049aeb5140d8
+      internalID: -1930026077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_2
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 1077
+        width: 918
+        height: 34
+      alignment: 9
+      pivot: {x: 0.8803853, y: 0.59140193}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cbd07e58d622fe41896db87b9ee9456
+      internalID: -902924875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_3
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 825
+        width: 521
+        height: 26
+      alignment: 9
+      pivot: {x: 0.88735265, y: 0.6049922}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5852de8fddba9f40af38c00bf69fc51
+      internalID: 357984078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_9
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 493
+        width: 431
+        height: 193
+      alignment: 9
+      pivot: {x: 0.7849744, y: 0.52075166}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01aded60aff7fd840b9de07119db4768
+      internalID: -1234432773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SpriteSheet_bird_attack_14
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 207
+        width: 247
+        height: 247
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1043520208a97f044884c5204a729352
+      internalID: -2008225555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      SpriteSheet_bird_attack_0: 671449241
+      SpriteSheet_bird_attack_1: -1930026077
+      SpriteSheet_bird_attack_10: 1053473578
+      SpriteSheet_bird_attack_11: 520996448
+      SpriteSheet_bird_attack_12: -555276364
+      SpriteSheet_bird_attack_13: -1899974924
+      SpriteSheet_bird_attack_14: -2008225555
+      SpriteSheet_bird_attack_15: 2028481991
+      SpriteSheet_bird_attack_16: -644571985
+      SpriteSheet_bird_attack_17: 1297474948
+      SpriteSheet_bird_attack_18: -1216161873
+      SpriteSheet_bird_attack_19: -156615444
+      SpriteSheet_bird_attack_2: -902924875
+      SpriteSheet_bird_attack_20: 38636487
+      SpriteSheet_bird_attack_21: -1661966777
+      SpriteSheet_bird_attack_22: 761087564
+      SpriteSheet_bird_attack_23: 800321674
+      SpriteSheet_bird_attack_24: 1919861084
+      SpriteSheet_bird_attack_25: 755738694
+      SpriteSheet_bird_attack_26: 1927123734
+      SpriteSheet_bird_attack_27: 297255131
+      SpriteSheet_bird_attack_28: -1911093093
+      SpriteSheet_bird_attack_29: -813245681
+      SpriteSheet_bird_attack_3: 357984078
+      SpriteSheet_bird_attack_30: -259672638
+      SpriteSheet_bird_attack_31: -523716576
+      SpriteSheet_bird_attack_32: 1035153228
+      SpriteSheet_bird_attack_33: -1496035378
+      SpriteSheet_bird_attack_34: -1439084865
+      SpriteSheet_bird_attack_35: 1240935767
+      SpriteSheet_bird_attack_36: -2093798840
+      SpriteSheet_bird_attack_37: -533287219
+      SpriteSheet_bird_attack_38: 300494967
+      SpriteSheet_bird_attack_39: 1577110482
+      SpriteSheet_bird_attack_4: -338279352
+      SpriteSheet_bird_attack_40: -1165560774
+      SpriteSheet_bird_attack_41: -481160791
+      SpriteSheet_bird_attack_42: -124146645
+      SpriteSheet_bird_attack_5: -431155201
+      SpriteSheet_bird_attack_6: -1422136100
+      SpriteSheet_bird_attack_7: 586186239
+      SpriteSheet_bird_attack_8: -477351671
+      SpriteSheet_bird_attack_9: -1234432773
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
