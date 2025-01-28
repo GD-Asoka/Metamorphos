@@ -118,11 +118,11 @@ public class Player : MonoBehaviour
         if (Physics2D.OverlapPoint(clickPos, groundMask) && !isAnimating)
         {
             Instantiate(tree, clickPos, Quaternion.identity);
-            QueueAnimation(summonHash, idleHash);
+            StartCoroutine(QueueAnimation(summonHash, idleHash));
         }
         else if (Physics2D.OverlapPoint(clickPos, ceilingMask) && !isAnimating)
         {
-            QueueAnimation(summonHash, idleHash);
+            StartCoroutine(QueueAnimation(summonHash, idleHash));
             Instantiate(vine, clickPos, Quaternion.identity);
         }
     }
@@ -192,31 +192,40 @@ public class Player : MonoBehaviour
     }
     private void SummonGhost()
     {
-        ghost = Instantiate(summonPrefab, transform.position, Quaternion.identity).GetComponent<PlayerGhost>();
+        if (!ghost)
+        {
+            ghost = Instantiate(summonPrefab, transform.position, Quaternion.identity).GetComponent<PlayerGhost>();
+        }
+        else
+        {
+            ghost.gameObject.SetActive(false);
+            ghost = null;
+            ChangeState(PlayerState.DRUID);
+        }
     }
     private void FireTransform()
     {
         SummonGhost();
         //transform.position += new Vector3(0, col.bounds.extents.y * 2, 0);
-        QueueAnimation(fireHash, birdHash);
+        StartCoroutine(QueueAnimation(fireHash, birdHash));
         rb.gravityScale = birdG;
     }
     private void WaterTransform()
     {
         SummonGhost();
-        QueueAnimation(waterHash, fishHash);
+        StartCoroutine(QueueAnimation(waterHash, fishHash));
         rb.gravityScale = fishG;
     }
     private void DruidTransform()
     {
         if(currentState == PlayerState.FIRE)
         {
-            QueueAnimation(fireHash, idleHash);
+            StartCoroutine(QueueAnimation(fireHash, idleHash));
             rb.gravityScale = druidG;
         }
         else if(currentState == PlayerState.WATER)
         {
-            QueueAnimation(waterHash, idleHash);
+            StartCoroutine(QueueAnimation(waterHash, idleHash));
             rb.gravityScale = druidG;
         }
         else
@@ -224,8 +233,6 @@ public class Player : MonoBehaviour
             ChangeAnimation(idleHash);
             rb.gravityScale = druidG;
         }
-        ghost = null;
-        ghost.gameObject.SetActive(false);
     }    
     private void UpdateAnimation()
     {
