@@ -19,6 +19,10 @@ public class EnemyAI : MonoBehaviour
     public float reactionThreshold;
     private Player player;
 
+    private readonly int walkHash = Animator.StringToHash("walk");
+    private readonly int attackHash = Animator.StringToHash("attack");
+    private readonly int teleportHash = Animator.StringToHash("teleport");
+
     public enum State
     {
         PATROL,

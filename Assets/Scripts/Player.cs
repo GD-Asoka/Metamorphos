@@ -22,6 +22,7 @@ public class Player : MonoBehaviour
     private readonly int waterHash = Animator.StringToHash("water");
     private readonly int birdHash = Animator.StringToHash("bird");
     private readonly int fishHash = Animator.StringToHash("fish");
+    private int currentHash;
     private bool flipX;
 
     private PlayerControls input;
@@ -73,6 +74,7 @@ public class Player : MonoBehaviour
         fish.performed += FishTransform;
         bird.performed += BirdTransform;
         interact.performed += Interact;
+        currentHash = idleHash;
         ChangeAnimation(idleHash);
     }
     private void Fire(CallbackContext ctx)
@@ -185,6 +187,9 @@ public class Player : MonoBehaviour
     }
     private void ChangeAnimation(int animToTrigger)
     {
+        if (animToTrigger == currentHash)
+            return;
+        
         anim.SetBool(idleHash, false);
         anim.SetBool(walkHash, false);
         anim.SetBool(jumpHash, false);
