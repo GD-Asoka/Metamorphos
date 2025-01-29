@@ -53,6 +53,8 @@ MonoBehaviour:
   growthRate: 0.1
   animTime: 1
   animRate: 0.1
+  lifespan: 5
+  minScale: 0.1
 --- !u!1 &7829478652468523174
 GameObject:
   m_ObjectHideFlags: 0
@@ -69,6 +71,7 @@ GameObject:
   - component: {fileID: 1789923486706039856}
   - component: {fileID: 9037861972432878816}
   - component: {fileID: 6584068383871441604}
+  - component: {fileID: 7109172147012136324}
   m_Layer: 0
   m_Name: vine
   m_TagString: Vine
@@ -413,3 +416,24 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.978612, y: 1.4230614}
   m_EdgeRadius: 0
+--- !u!95 &7109172147012136324
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7829478652468523174}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

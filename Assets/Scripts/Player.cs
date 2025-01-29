@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     private readonly int attackHash = Animator.StringToHash("attacking");
     private readonly int splashHash = Animator.StringToHash("splashing");
     private readonly int hideHash = Animator.StringToHash("hiding");
-    private int currentHash;
+    private int currentHash, prevHash;
     private bool flipX;
 
     private PlayerControls input;
@@ -42,9 +42,9 @@ public class Player : MonoBehaviour
     public GameObject tree, vine, summonPrefab;
     private PlayerGhost ghost = null;
     public int druidPower = 5;
-    public ParticleSystem fireParticles, waterParticles;
+    public ParticleSystem fireParticles, waterParticles, waterPower;
 
-    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, canSummon = true, isGrounded, isAnimating;
+    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, canSummon = true, isGrounded, isBusy;
     public float animTime = 1f, animSpeed = 0.1f, summonTime = 5f;
 
     public enum PlayerState
@@ -54,6 +54,7 @@ public class Player : MonoBehaviour
         WATER
     }
     public PlayerState currentState;
+    public PlayerState prevState;
 
     private void OnEnable()
     {
@@ -110,17 +111,17 @@ public class Player : MonoBehaviour
 
     private void Fire(CallbackContext ctx)
     {
-        if(!canSummon)
+        if(currentState != PlayerState.DRUID)
             return;
         Vector2 mousePos = Mouse.current.position.ReadValue();
         Vector3 clickPos = Camera.main.ScreenToWorldPoint(mousePos);
         clickPos.z = 0;
-        if (Physics2D.OverlapPoint(clickPos, groundMask) && !isAnimating)
+        if (Physics2D.OverlapPoint(clickPos, groundMask) && !isBusy)
         {
             Instantiate(tree, clickPos, Quaternion.identity);
             StartCoroutine(QueueAnimation(summonHash, idleHash));
         }
-        else if (Physics2D.OverlapPoint(clickPos, ceilingMask) && !isAnimating)
+        else if (Physics2D.OverlapPoint(clickPos, ceilingMask) && !isBusy)
         {
             StartCoroutine(QueueAnimation(summonHash, idleHash));
             Instantiate(vine, clickPos, Quaternion.identity);
@@ -143,13 +144,14 @@ public class Player : MonoBehaviour
         print(currentState);
         if (currentState == PlayerState.FIRE)
         {
-            ChangeAnimation(attackHash);
             rb.AddForce(Vector2.right * attackForce, ForceMode2D.Impulse);
+            ChangeAnimation(attackHash);
         }
         else if (currentState == PlayerState.WATER)
         {
-            ChangeAnimation(splashHash);
             rb.AddForce(Vector2.one * splashForce, ForceMode2D.Impulse);
+            //ChangeAnimation(splashHash);
+            waterPower.Play();
         }
         else
         {
@@ -169,9 +171,7 @@ public class Player : MonoBehaviour
     }
     private void ChangeState(PlayerState newState)
     {
-        if(isAnimating)
-            return;
-        if(currentState == newState)
+        if(currentState == newState || isBusy)
             return;
         currentState = newState;
         switch(currentState)
@@ -206,6 +206,12 @@ public class Player : MonoBehaviour
     private void FireTransform()
     {
         SummonGhost();
+        if (currentState == PlayerState.FIRE)
+        {
+            StartCoroutine(QueueAnimation(fireHash, idleHash));
+            rb.gravityScale = druidG;
+            return;
+        }
         //transform.position += new Vector3(0, col.bounds.extents.y * 2, 0);
         StartCoroutine(QueueAnimation(fireHash, birdHash));
         rb.gravityScale = birdG;
@@ -213,6 +219,12 @@ public class Player : MonoBehaviour
     private void WaterTransform()
     {
         SummonGhost();
+        if (currentState == PlayerState.WATER)
+        {
+            StartCoroutine(QueueAnimation(waterHash, idleHash));
+            rb.gravityScale = druidG;
+            return;
+        }
         StartCoroutine(QueueAnimation(waterHash, fishHash));
         rb.gravityScale = fishG;
     }
@@ -244,9 +256,9 @@ public class Player : MonoBehaviour
     }
     private void ChangeAnimation(int animToTrigger)
     {
-        if (animToTrigger == currentHash || isAnimating)
+        if (animToTrigger == currentHash || isBusy)
             return;
-        if(currentState != PlayerState.DRUID && (animToTrigger == idleHash || animToTrigger == walkHash || animToTrigger == jumpHash || animToTrigger == climbHash || animToTrigger == hideHash))
+        if(currentState != PlayerState.DRUID && (animToTrigger == idleHash || animToTrigger == walkHash || animToTrigger == jumpHash || animToTrigger == climbHash || animToTrigger == hideHash || animToTrigger == summonHash))
             return;
         
         currentHash = animToTrigger;        
@@ -263,7 +275,7 @@ public class Player : MonoBehaviour
     }
     private IEnumerator QueueAnimation(int initialAnimHash, int finalAnimHash)
     {
-        isAnimating = true;
+        isBusy = true;
         anim.SetBool(idleHash, false);
         anim.SetBool(walkHash, false);
         anim.SetBool(jumpHash, false);
@@ -279,7 +291,7 @@ public class Player : MonoBehaviour
         anim.SetBool(initialAnimHash, false);
         anim.SetBool(finalAnimHash, true);
         currentHash = finalAnimHash;
-        isAnimating = false;
+        isBusy = false;
     }
     private void Move()
     {
@@ -321,12 +333,12 @@ public class Player : MonoBehaviour
         }
         else if(isJumping && currentState == PlayerState.FIRE)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Force);
             isJumping = false;
         }
-        else if (isJumping && currentState == PlayerState.WATER)
+        else if (canJump && isJumping && currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.one * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(flipX ? Vector2.one * jumpForce : -1 * Vector2.one * jumpForce, ForceMode2D.Force);
             isJumping = false;
         }
     }
