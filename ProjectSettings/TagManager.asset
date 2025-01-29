@@ -8,6 +8,7 @@ TagManager:
   - Vine
   - Tree
   - Ground
+  - Waypoint
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Ceiling
   - Player
   - Enemy
-  - 
+  - Waypoint
   - 
   - 
   - 

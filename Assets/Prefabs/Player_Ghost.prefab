@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 2132953259541581877}
   - component: {fileID: 9156522006429362030}
   - component: {fileID: 3468645769445476794}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Player_Ghost
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

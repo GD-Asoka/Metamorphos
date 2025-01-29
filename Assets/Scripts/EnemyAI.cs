@@ -9,19 +9,22 @@ public class EnemyAI : MonoBehaviour
     public Vector3 destination;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
+    private Animator anim;
+
     public float moveSpeed = 5f, waitTime = 3f, destCheckDist = 0.5f, attackRate = 2f;
     public GameObject fireball;
     private Viewcone viewcone;
-    public bool canAttack = true;
+    public bool canAttack = true, isGrounded;
 
     public Vector3 position;
     public float hearingRange;
     public float reactionThreshold;
     private Player player;
 
-    private readonly int walkHash = Animator.StringToHash("walk");
-    private readonly int attackHash = Animator.StringToHash("attack");
-    private readonly int teleportHash = Animator.StringToHash("teleport");
+    private readonly int walkHash = Animator.StringToHash("walking");
+    private readonly int attackHash = Animator.StringToHash("attacking");
+    private readonly int teleportHash = Animator.StringToHash("teleporting");
+    private int currentAnimHash;
 
     public enum State
     {
@@ -37,91 +40,97 @@ public class EnemyAI : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
-        transform.position = start.position;
+        anim = GetComponent<Animator>();
+        //transform.position = start.position;
         destination = end.position;
         player = FindObjectOfType<Player>();
         viewcone = GetComponentInChildren<Viewcone>();
     }
     private void Start()
     {
-        SetState(State.PATROL);
+        //ChangeState(State.PATROL);
+        newState = State.PATROL;
+        currentState = State.ATTACK;
         Invoke(nameof(SetWaypoint), 0.5f);
     }
     private void Update()
     {
         ChangeState(newState);
+        isGrounded = CheckGrounded();
     }
-
+    private bool CheckGrounded()
+    {
+        Debug.DrawRay(transform.position, Vector2.down * 1.5f, Color.green);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.5f);
+        return hit.collider != null;
+    }
     private void SetWaypoint()
     {
         start.transform.position = new Vector2(start.transform.position.x, transform.position.y);
         end.transform.position = new Vector2(end.transform.position.x, transform.position.y);
-    }
-
+    }   
     private void ChangeState(State newState)
     {
-        FlipSprite();
         if(currentState == newState)
             return;
-        else
-            SetState(newState);
-    }
-
-    private void SetState(State state)
-    {
-        currentState = state;
-        ChangeState();
-        switch(currentState)
-        {
-            case State.PATROL:
-                StartCoroutine(Patrol());
-                break;
-            case State.CHASE:
-                StartCoroutine(Chase(viewcone.lastPosition));
-                break;
-            case State.ATTACK:
-                StartCoroutine(Attack());
-                break;
-        }
-    }
-    private void ChangeState()
-    {
+        currentState = newState;
         isPatrolling = false;
         isChasing = false;
         isAttacking = false;
+        StopAllCoroutines();
         switch(currentState)
         {
             case State.PATROL:
                 isPatrolling = true;
+                StartCoroutine(Patrol());
                 break;
             case State.CHASE:
                 isChasing = true;
+                StartCoroutine(Chase(viewcone.lastPosition));
                 break;
             case State.ATTACK:
                 isAttacking = true;
+                StartCoroutine(Attack());
                 break;
         }
     }
+    private void ChangeAnimation(int animHash)
+    {
+        if(animHash == currentAnimHash)
+            return;
+        else
+        {
+            currentAnimHash = animHash;
+            anim.SetBool(walkHash, false);
+            anim.SetBool(attackHash, false);
+            anim.SetBool(teleportHash, false);
+            anim.SetBool(currentAnimHash, true);
+        }
+    }
 
+    float moveDir = 1;
+    bool wait;
     private IEnumerator Patrol()
     {
-        if (!isPatrolling)
+         if (!isPatrolling)
             yield break;
-        float moveDir;
         float distance = Vector3.Distance(transform.position, destination);
         while(isPatrolling && distance > destCheckDist)
         {
-            moveDir = destination.x - transform.position.x > 0 ? 1 : -1;
-            distance = Vector3.Distance(transform.position, destination);
-            if(distance <= destCheckDist && rb.velocity.x != 0)
+            if(isGrounded)
+                ChangeAnimation(walkHash);
+            else
+                ChangeAnimation(teleportHash);
+            //moveDir = destination.x - transform.position.x > 0 ? 1 : -1;
+            //distance = Vector3.Distance(transform.position, destination);
+            if (wait)
             {
                 rb.velocity = Vector2.zero;
-                transform.position = destination;
-                destination = destination == start.position ? end.position : start.position;
-                distance = Vector3.Distance(transform.position, destination);
                 yield return new WaitForSeconds(waitTime);
+                wait = false;
             }
             rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
+            FlipSprite();   
             yield return null;
         }
     }
@@ -130,7 +139,12 @@ public class EnemyAI : MonoBehaviour
         rb.velocity = Vector2.zero;
         while(isAttacking)
         {
-            FlipSprite(true);
+            ChangeAnimation(attackHash);
+            if (player.transform.position.x < transform.position.x)
+                flipX = true;
+            else if (player.transform.position.x > transform.position.x)
+                flipX = false;
+            FlipSprite();
             yield return null;
             if (canAttack)
             {
@@ -138,54 +152,75 @@ public class EnemyAI : MonoBehaviour
                 yield return new WaitForSeconds(attackRate);
             }
         }
+        //newState = State.PATROL;
     }
     private IEnumerator Chase(Vector2 target)
     {
         rb.velocity = Vector2.zero;
         var dir = target - (Vector2)transform.position;
+        var time = 0f;
         while(isChasing)
         {
+            time += Time.deltaTime;
+            ChangeAnimation(walkHash);
             rb.velocity = dir.normalized * moveSpeed;
-            if (Vector2.Distance(transform.position, target) < 0.5f)
+            if(player.transform.position.x < transform.position.x)
+                flipX = true;
+            else if(player.transform.position.x > transform.position.x)
+                flipX = false;
+            FlipSprite();
+            if (Vector2.Distance(transform.position, target) < 1f)
             {
                 rb.velocity = Vector2.zero;
                 yield return new WaitForSeconds(waitTime);
+                newState = State.PATROL;
+            }
+            if(time >= 5f)
+            {
                 newState = State.PATROL;
             }
             yield return null;
         }
     }
 
-    private void FlipSprite(bool lookAtPlayer = false)
+    private void FlipSprite()
     {
         //if(lookAtPlayer)
         //{
         //    sr.flipX = player.transform.position.x - transform.position.x > 0 ? false : true;
         //}
         if (rb.velocity.y != 0)
-            return;
-        if (rb.velocity.x > 0)
         {
-            sr.flipX = false;
+            ChangeAnimation(teleportHash);
         }
-        else if (rb.velocity.x < 0)
+        if (flipX || rb.velocity.x < 0)
         {
-            sr.flipX = true;
+            transform.localScale = new Vector3(-1, 1, 1);
         }
-        else
+        else if (!flipX || rb.velocity.x > 0)
         {
-            return;
-        }
-        if(sr.flipX)
-        {
-            viewcone.transform.localScale = new Vector3(-1f, 1, 1);
-        }
-        else
-        {
-            viewcone.transform.localScale = new Vector3(1f, 1, 1);
+            transform.localScale = new Vector3(1, 1, 1);
         }
     }
-
+    bool flipX;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Waypoint"))
+        {
+            if(collision.transform.position.x > transform.position.x)
+            {
+                moveDir = -1;
+                flipX = true;
+            }
+            else if (collision.transform.position.x < transform.position.x)
+            {
+                moveDir = 1;
+                flipX = false;
+            }
+            FlipSprite();
+            wait = true;
+        }
+    }
     public bool CanHearSound(SoundSource sound)
     {
         float distance = Vector3.Distance(position, sound.position);
