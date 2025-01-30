@@ -356,8 +356,8 @@ GameObject:
   - component: {fileID: 254747850}
   - component: {fileID: 254747849}
   - component: {fileID: 254747848}
-  m_Layer: 3
-  m_Name: Ground (1)
+  m_Layer: 0
+  m_Name: Barrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5639,8 +5639,8 @@ GameObject:
   - component: {fileID: 780379017}
   - component: {fileID: 780379016}
   - component: {fileID: 780379015}
-  m_Layer: 3
-  m_Name: Ground (2)
+  m_Layer: 0
+  m_Name: Barrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15963,6 +15963,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1402374777232678420, guid: d95678bfbfdd82d4abb67e0245705d64, type: 3}
   m_PrefabInstance: {fileID: 9046494036324223100}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1947608787
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1947608789}
+  - component: {fileID: 1947608788}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1947608788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947608787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c93f4189e80277143a611e8c721667b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1947608789
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1947608787}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 15.59032, y: -1.9218137, z: 0.42842183}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1951296769
 GameObject:
   m_ObjectHideFlags: 0
@@ -15974,8 +16018,8 @@ GameObject:
   - component: {fileID: 1951296772}
   - component: {fileID: 1951296771}
   - component: {fileID: 1951296770}
-  m_Layer: 3
-  m_Name: Ground (3)
+  m_Layer: 0
+  m_Name: Barrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16643,7 +16687,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2706387506575619288, guid: bd5a013fc611b7848bcb7107495f2d4c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.53
+      value: 7.87
       objectReference: {fileID: 0}
     - target: {fileID: 3251272222575517444, guid: bd5a013fc611b7848bcb7107495f2d4c, type: 3}
       propertyPath: m_GravityScale
@@ -16691,7 +16735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4796496303061221552, guid: bd5a013fc611b7848bcb7107495f2d4c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.32
+      value: -26.09
       objectReference: {fileID: 0}
     - target: {fileID: 6941719364624174964, guid: bd5a013fc611b7848bcb7107495f2d4c, type: 3}
       propertyPath: fireball
@@ -17329,3 +17373,4 @@ SceneRoots:
   - {fileID: 1323035629209076353}
   - {fileID: 857877441}
   - {fileID: 2139344925}
+  - {fileID: 1947608789}
