@@ -99,6 +99,8 @@ public class Player : MonoBehaviour
     {
         CheckJump();
         CheckMovement();
+        if (currentState != PlayerState.DRUID)
+            anim.SetBool(idleHash, false);
     }
     private void FixedUpdate()
     {
@@ -133,23 +135,31 @@ public class Player : MonoBehaviour
     }
     private void FishTransform(CallbackContext ctx)
     {
-        ChangeState(PlayerState.WATER);
+        if (currentState == PlayerState.DRUID)
+            ChangeState(PlayerState.WATER);
+        else if (currentState == PlayerState.WATER)
+            ChangeState(PlayerState.DRUID);
     }
     private void BirdTransform(CallbackContext ctx)
     {
-        ChangeState(PlayerState.FIRE);
+        if (currentState == PlayerState.DRUID)
+            ChangeState(PlayerState.FIRE);
+        else if (currentState == PlayerState.FIRE)
+            ChangeState(PlayerState.DRUID);
     }
     private void Interact(CallbackContext ctx)
     {
         print(currentState);
         if (currentState == PlayerState.FIRE)
         {
-            rb.AddForce(Vector2.right * attackForce, ForceMode2D.Impulse);
+            rb.AddForce(flipX ? Vector2.left * attackForce : Vector2.right * attackForce, ForceMode2D.Impulse);
             ChangeAnimation(attackHash);
         }
         else if (currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.one * splashForce, ForceMode2D.Impulse);
+            if (waterPower.isPlaying)
+                return;
+            rb.AddForce(flipX ? new Vector2(-1,1) * splashForce :Vector2.one * splashForce, ForceMode2D.Impulse);
             //ChangeAnimation(splashHash);
             waterPower.Play();
         }
@@ -206,12 +216,12 @@ public class Player : MonoBehaviour
     private void FireTransform()
     {
         SummonGhost();
-        if (currentState == PlayerState.FIRE)
-        {
-            StartCoroutine(QueueAnimation(fireHash, idleHash));
-            rb.gravityScale = druidG;
-            return;
-        }
+        //if (currentState == PlayerState.FIRE)
+        //{
+        //    StartCoroutine(QueueAnimation(fireHash, idleHash));
+        //    rb.gravityScale = druidG;
+        //    return;
+        //}
         //transform.position += new Vector3(0, col.bounds.extents.y * 2, 0);
         StartCoroutine(QueueAnimation(fireHash, birdHash));
         rb.gravityScale = birdG;
@@ -219,12 +229,12 @@ public class Player : MonoBehaviour
     private void WaterTransform()
     {
         SummonGhost();
-        if (currentState == PlayerState.WATER)
-        {
-            StartCoroutine(QueueAnimation(waterHash, idleHash));
-            rb.gravityScale = druidG;
-            return;
-        }
+        //if (currentState == PlayerState.WATER)
+        //{
+        //    StartCoroutine(QueueAnimation(waterHash, idleHash));
+        //    rb.gravityScale = druidG;
+        //    return;
+        //}
         StartCoroutine(QueueAnimation(waterHash, fishHash));
         rb.gravityScale = fishG;
     }
@@ -233,18 +243,16 @@ public class Player : MonoBehaviour
         if(currentState == PlayerState.FIRE)
         {
             StartCoroutine(QueueAnimation(fireHash, idleHash));
-            rb.gravityScale = druidG;
         }
         else if(currentState == PlayerState.WATER)
         {
             StartCoroutine(QueueAnimation(waterHash, idleHash));
-            rb.gravityScale = druidG;
         }
         else
         {
             ChangeAnimation(idleHash);
-            rb.gravityScale = druidG;
         }
+        rb.gravityScale = druidG;
     }    
     private void UpdateAnimation()
     {
@@ -295,6 +303,8 @@ public class Player : MonoBehaviour
     }
     private void Move()
     {
+        if (isBusy)
+            return;
         if (currentState == PlayerState.DRUID)
         {
             if (isClimbing)
@@ -309,22 +319,24 @@ public class Player : MonoBehaviour
                 else
                     ChangeAnimation(idleHash);
                 rb.velocity = new Vector2(moveDirection.x * moveSpeed, rb.velocity.y);
-                UpdateAnimation();
+                //UpdateAnimation();
             }            
         }
-        else if(currentState == PlayerState.FIRE)
+        else if (currentState == PlayerState.FIRE)
         {
-            rb.velocity = new Vector2(moveDirection.x, rb.velocity.y);
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
             UpdateAnimation();
         }
         else if (currentState == PlayerState.WATER)
         {
-            rb.velocity = new Vector2(moveDirection.x, rb.velocity.y);
-            UpdateAnimation();
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
         }
+        UpdateAnimation();
     }
     private void Jump()
     {
+        if(isBusy) 
+            return;
         if (canJump && isJumping && currentState == PlayerState.DRUID)
         {
             ChangeAnimation(jumpHash);
