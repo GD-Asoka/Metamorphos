@@ -129,7 +129,7 @@ public class EnemyAI : MonoBehaviour
                 yield return new WaitForSeconds(waitTime);
                 wait = false;
             }
-            rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
+             rb.velocity = new Vector2(moveDir * moveSpeed, rb.velocity.y);
             FlipSprite();   
             yield return null;
         }
