@@ -14,7 +14,7 @@ public class EnemyAI : MonoBehaviour
     public float moveSpeed = 5f, waitTime = 3f, destCheckDist = 0.5f, attackRate = 2f;
     public GameObject fireball;
     private Viewcone viewcone;
-    public bool canAttack = true, isGrounded;
+    public bool canAttack = true, isGrounded, isDead;
 
     public Vector3 position;
     public float hearingRange;
@@ -24,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private readonly int walkHash = Animator.StringToHash("walking");
     private readonly int attackHash = Animator.StringToHash("attacking");
     private readonly int teleportHash = Animator.StringToHash("teleporting");
+    private readonly int deathHash = Animator.StringToHash("dying");
     private int currentAnimHash;
 
     public enum State
@@ -55,6 +56,10 @@ public class EnemyAI : MonoBehaviour
     }
     private void Update()
     {
+        if(isDead)
+        {
+            return;
+        }    
         ChangeState(newState);
         isGrounded = CheckGrounded();
     }
@@ -115,7 +120,7 @@ public class EnemyAI : MonoBehaviour
          if (!isPatrolling)
             yield break;
         float distance = Vector3.Distance(transform.position, destination);
-        while(isPatrolling && distance > destCheckDist)
+        while (isPatrolling && distance > destCheckDist)
         {
             if(isGrounded)
                 ChangeAnimation(walkHash);
@@ -221,6 +226,34 @@ public class EnemyAI : MonoBehaviour
             wait = true;
         }
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            if(player.currentState != Player.PlayerState.DRUID)
+            {
+                isDead = true;
+                StopAllCoroutines();
+                anim.SetTrigger(deathHash);
+                GetComponent<Collider2D>().isTrigger = true;
+                rb.gravityScale = 5;
+                StartCoroutine(Kill());
+                GameManager.instance.enemiesKilled++;
+            }
+        }
+    }
+    public LayerMask groundMask;
+    private IEnumerator Kill()
+    {
+        bool grounded = false; 
+        while (!grounded)
+        {
+            grounded = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, groundMask);
+        }
+            yield return null;
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+    }
     public bool CanHearSound(SoundSource sound)
     {
         float distance = Vector3.Distance(position, sound.position);
@@ -235,7 +268,6 @@ public class EnemyAI : MonoBehaviour
         // Check if the perceived loudness meets the reaction threshold
         return perceivedLoudness >= reactionThreshold;
     }
-
     public void ReactToSound(SoundSource sound)
     {
         if (CanHearSound(sound))

@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject Canvas, PauseMenu, ControlsMenu, overlay;
     private bool canWin = false;
-    private int enemiesKilled, blueFlames, redFlames, druidPowers;
+    public int enemiesKilled, blueFlames, redFlames, druidPowers;
     public int enemyLimit, blueFlameCondition, redFlameCondition, druidPowerLimit;
-    public TextMeshProUGUI enemiesKilledText, blueFlamesText, redFlamesText, keysCollectedText, druidPowersText;
+    public TextMeshProUGUI enemiesKilledText, blueFlamesText, redFlamesText, druidPowersText;
     public Image key;
     public bool keyCollected;
 
@@ -28,7 +28,22 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Pause();
-        InvokeRepeating(nameof(CheckState), 0.1f, 0.1f);
+        InvokeRepeating(nameof(CheckState), 0.1f, 0.1f); 
+        var torches = FindObjectsOfType<Torch>();
+        if (torches == null)
+            return;
+        foreach (var t in torches)
+        {
+            if (t.currentType == Torch.TorchType.Fire)
+            {
+                redFlames++;
+            }
+            else
+            {
+                blueFlames++;
+            }
+        }
+        druidPowers--;
     }
     private void CheckState()
     {
@@ -49,10 +64,10 @@ public class GameManager : MonoBehaviour
     #region UI
     public void UpdateUI()
     {
-        blueFlamesText.text = $"Blue Flames: + {blueFlames}";
-        redFlamesText.text = $"Red Flames: + {redFlames}";
-        enemiesKilledText.text = $"Enemies Killed: + {enemiesKilled} + / + {enemyLimit}";
-        druidPowersText.text = $"Power Used: + {druidPowers} + / + {druidPowerLimit}";
+        blueFlamesText.text = $"Blue Flames: {blueFlames}/{blueFlameCondition}";
+        redFlamesText.text = $"Red Flames: {redFlames}/{redFlameCondition}";
+        enemiesKilledText.text = $"Enemies Killed: {enemiesKilled}/{enemyLimit}";
+        druidPowersText.text = $"Power Used: {(int)(druidPowers*0.5f)}/{druidPowerLimit}";
         if(enemiesKilled <= enemyLimit)
         {
             enemiesKilledText.color = Color.green;
@@ -68,6 +83,33 @@ public class GameManager : MonoBehaviour
         else
         {
             druidPowersText.color = Color.red;
+        }
+        if(blueFlames >= blueFlameCondition)
+        {
+            blueFlamesText.color = Color.green;
+        }
+        else
+        {
+            blueFlamesText.color = Color.red;
+        }
+        if(redFlames >= redFlameCondition)
+        {
+            redFlamesText.color = Color.green;
+        }
+        else
+        {
+            redFlamesText.color = Color.red;
+        }
+        var color = key.color;
+        if (keyCollected)
+        {
+            canWin = true;
+            key.color = new Color(color.r, color.g, color.b, 1);
+        }
+        else
+        {
+            canWin = false;
+            key.color = new Color(color.r, color.g, color.b, 0.5f);
         }
     }
     public void Pause()
@@ -116,20 +158,10 @@ public class GameManager : MonoBehaviour
         }
     }
     public bool CheckWin()
-    {
-        var color = key.color;
-        if(blueFlames == blueFlameCondition && redFlames == redFlameCondition)
-        {
-            if(keyCollected)
-            {
-                canWin = true;
-                key.color = new Color(color.r, color.g, color.b, 1);
-            }
-            else
-            {
-                canWin = false;
-                key.color = new Color(color.r, color.g, color.b, 0.5f);
-            }
+    {       
+        if(blueFlames >= blueFlameCondition && redFlames >= redFlameCondition && keyCollected)
+        {            
+            canWin = true;
         }
         else
         {

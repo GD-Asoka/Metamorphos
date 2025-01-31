@@ -12,6 +12,10 @@ public class Viewcone : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (Player.instance.isHiding)
+        {
+            return;
+        }
         if (collision.CompareTag("Player"))
         {
             parent.newState = EnemyAI.State.ATTACK;
@@ -19,6 +23,10 @@ public class Viewcone : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if(Player.instance.isHiding)
+        {
+            return;
+        }
         if (collision.CompareTag("Player"))
         {
             lastPosition = collision.transform.position;

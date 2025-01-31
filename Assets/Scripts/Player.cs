@@ -47,7 +47,8 @@ public class Player : MonoBehaviour
     public int druidPower = 5;
     public ParticleSystem fireParticles, waterParticles, waterPower;
 
-    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, isGrounded, isBusy, isDead, hasWon;
+    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isGrounded, isBusy, isDead, hasWon;
+    public bool isHiding;
     public float animTime = 1f, animSpeed = 0.1f, summonTime = 5f;
 
     public enum PlayerState
@@ -147,10 +148,12 @@ public class Player : MonoBehaviour
             StartCoroutine(QueueAnimation(summonHash, idleHash));
             Instantiate(vine, clickPos, Quaternion.identity);
         }
+        GameManager.instance.druidPowers++;
     }
     private void AltFire(CallbackContext ctx)
     {
         FlipTime();
+        GameManager.instance.druidPowers++;
     }
     private void FishTransform(CallbackContext ctx)
     {
@@ -227,6 +230,8 @@ public class Player : MonoBehaviour
                 WaterTransform();
                 break;
         }
+        StartCoroutine(SummonTimer());
+        GameManager.instance.druidPowers++;
     }
     private void SummonGhost()
     {
@@ -354,7 +359,7 @@ public class Player : MonoBehaviour
         }
         else if (canJump && isJumping && currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.up * jumpForce * 1.25f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce * 1.3f, ForceMode2D.Impulse);
             isJumping = false;
         }
     }
@@ -437,8 +442,14 @@ public class Player : MonoBehaviour
         {
             if(GameManager.instance.CheckWin())
             {
-
+                StartCoroutine(Win());
             }
+        }        
+        ITriggerable hit;
+        if (collision.TryGetComponent(out hit) && currentState != PlayerState.DRUID)
+        {
+            hit.Trigger();
+            StartCoroutine(Explode());
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -483,6 +494,13 @@ public class Player : MonoBehaviour
             hit.Trigger();
             StartCoroutine(Explode());
         }
+        if (collision.gameObject.CompareTag("Door"))
+        {
+            if (GameManager.instance.CheckWin())
+            {
+                StartCoroutine(Win());
+            }
+        }
     }
     private IEnumerator Explode()
     {
@@ -523,22 +541,31 @@ public class Player : MonoBehaviour
         anim.SetTrigger("defeat");
         DisableAnimations();
         isDead = true;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         GameManager.instance.Restart();
     }
     private IEnumerator Win()
     {
-        isBusy = true;
-        anim.SetTrigger("victory");
-        DisableAnimations();
-        hasWon = true;
-        yield return new WaitForSeconds(2f);
-        GameManager.instance.LoadNextLevel();
+        if(!isBusy)
+        {
+            isBusy = true;
+            anim.SetTrigger("victory");
+            DisableAnimations();
+            hasWon = true;
+            yield return new WaitForSeconds(2f);
+            GameManager.instance.LoadNextLevel();
+        }
     }
     private IEnumerator SummonTimer()
     {
-        if(currentState == PlayerState.DRUID)
+        float time = 0;
+        while(currentState != PlayerState.DRUID && time < summonTime)
+        {
+            time += Time.deltaTime;  
+            yield return null;
+        }
+        if (currentState == PlayerState.DRUID)
             yield break;
-        yield return null;
+        StartCoroutine(Explode());
     }
 }
