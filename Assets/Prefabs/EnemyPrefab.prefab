@@ -535,6 +535,9 @@ MonoBehaviour:
   reactionThreshold: 0
   currentState: 0
   newState: 0
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 72
 --- !u!95 &8049605135456658255
 Animator:
   serializedVersion: 5
