@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 
 public class Player : MonoBehaviour 
 {
+    public static Player instance;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D col;
@@ -46,7 +47,7 @@ public class Player : MonoBehaviour
     public int druidPower = 5;
     public ParticleSystem fireParticles, waterParticles, waterPower;
 
-    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, isGrounded, isBusy;
+    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, isGrounded, isBusy, isDead, hasWon;
     public float animTime = 1f, animSpeed = 0.1f, summonTime = 5f;
 
     public enum PlayerState
@@ -79,6 +80,14 @@ public class Player : MonoBehaviour
     }
     private void Awake()
     {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         rb = GetComponent<Rigidbody2D>();        
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
@@ -99,6 +108,10 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if(isDead)
+        {
+            return;
+        }
         CheckJump();
         CheckMovement();
         if (currentState != PlayerState.DRUID)
@@ -106,6 +119,10 @@ public class Player : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if (isDead || hasWon)
+        {
+            return;
+        }
         if (canMove && !isBusy)
         {
             Move();
@@ -262,31 +279,13 @@ public class Player : MonoBehaviour
             return;
         
         currentHash = animToTrigger;        
-        anim.SetBool(idleHash, false);
-        anim.SetBool(attackHash, false);
-        anim.SetBool(walkHash, false);
-        anim.SetBool(jumpHash, false);
-        anim.SetBool(climbHash, false);
-        anim.SetBool(summonHash, false);
-        anim.SetBool(fireHash, false);
-        anim.SetBool(waterHash, false);
-        anim.SetBool(birdHash, false);
-        anim.SetBool(fishHash, false);
+        DisableAnimations();
         anim.SetBool(animToTrigger, true);               
     }
     private IEnumerator QueueAnimation(int initialAnimHash, int finalAnimHash)
     {
         isBusy = true;
-        anim.SetBool(idleHash, false);
-        anim.SetBool(attackHash, false);
-        anim.SetBool(walkHash, false);
-        anim.SetBool(jumpHash, false);
-        anim.SetBool(climbHash, false);
-        anim.SetBool(summonHash, false);
-        anim.SetBool(fireHash, false);
-        anim.SetBool(waterHash, false);
-        anim.SetBool(birdHash, false);
-        anim.SetBool(fishHash, false);
+        DisableAnimations();
         anim.SetBool(initialAnimHash, true);
         currentHash = initialAnimHash;
         yield return new WaitForSeconds(animTime);
@@ -294,6 +293,19 @@ public class Player : MonoBehaviour
         anim.SetBool(finalAnimHash, true);
         currentHash = finalAnimHash;
         isBusy = false;
+    }
+    private void DisableAnimations()
+    {
+        anim.SetBool(idleHash, false);
+        anim.SetBool(attackHash, false);
+        anim.SetBool(walkHash, false);
+        anim.SetBool(jumpHash, false);
+        anim.SetBool(climbHash, false);
+        anim.SetBool(summonHash, false);
+        anim.SetBool(fireHash, false);
+        anim.SetBool(waterHash, false);
+        anim.SetBool(birdHash, false);
+        anim.SetBool(fishHash, false);
     }
     private void Move()
     {
@@ -342,7 +354,7 @@ public class Player : MonoBehaviour
         }
         else if (canJump && isJumping && currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.up * jumpForce * 2f, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce * 1.25f, ForceMode2D.Impulse);
             isJumping = false;
         }
     }
@@ -408,6 +420,25 @@ public class Player : MonoBehaviour
         if(collision.CompareTag("Tree") && currentState == PlayerState.DRUID)
         {
             canHide = true;
+        }
+        if(collision.CompareTag("Fireball"))
+        {
+            if (currentState == PlayerState.DRUID)
+            {
+                StopAllCoroutines();                
+                StartCoroutine(Defeat());
+            }
+            else
+            {
+                StartCoroutine(Explode());
+            }
+        }
+        if(collision.CompareTag("Door"))
+        {
+            if(GameManager.instance.CheckWin())
+            {
+
+            }
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -485,6 +516,24 @@ public class Player : MonoBehaviour
         canJump = true;
         isHiding = false;
         ChangeAnimation(idleHash);
+    }
+    private IEnumerator Defeat()
+    {
+        isBusy = true;
+        anim.SetTrigger("defeat");
+        DisableAnimations();
+        isDead = true;
+        yield return new WaitForSeconds(2f);
+        GameManager.instance.Restart();
+    }
+    private IEnumerator Win()
+    {
+        isBusy = true;
+        anim.SetTrigger("victory");
+        DisableAnimations();
+        hasWon = true;
+        yield return new WaitForSeconds(2f);
+        GameManager.instance.LoadNextLevel();
     }
     private IEnumerator SummonTimer()
     {
