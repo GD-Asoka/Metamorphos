@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7016566608227263347}
   - component: {fileID: 7401739701596321597}
   - component: {fileID: 9123316246184634386}
+  - component: {fileID: 2425819688224702118}
   m_Layer: 0
   m_Name: keyPrefab
   m_TagString: Untagged
@@ -127,9 +128,30 @@ CapsuleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.0264225, y: -0.03142643}
   m_Size: {x: 0.88204765, y: 2.4532166}
   m_Direction: 0
+--- !u!95 &2425819688224702118
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3948340973625432470}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 168fd0f0a0397d249901932f7786d244, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

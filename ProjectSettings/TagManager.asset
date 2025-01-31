@@ -9,6 +9,8 @@ TagManager:
   - Tree
   - Ground
   - Waypoint
+  - Key
+  - Torch
   layers:
   - Default
   - TransparentFX

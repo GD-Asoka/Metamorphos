@@ -46,7 +46,7 @@ public class Player : MonoBehaviour
     public int druidPower = 5;
     public ParticleSystem fireParticles, waterParticles, waterPower;
 
-    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, canSummon = true, isGrounded, isBusy;
+    private bool canJump = true, isClimbing, isJumping, canMove = true, canHide, isHiding, isGrounded, isBusy;
     public float animTime = 1f, animSpeed = 0.1f, summonTime = 5f;
 
     public enum PlayerState
@@ -151,17 +151,26 @@ public class Player : MonoBehaviour
     }
     private void Interact(CallbackContext ctx)
     {
-        if (currentState == PlayerState.FIRE)
+        StartCoroutine(UseAbility());
+    }
+    private IEnumerator UseAbility()
+    {
+        if(currentState == PlayerState.FIRE)
         {
             rb.AddForce(flipX ? Vector2.left * attackForce : Vector2.right * attackForce, ForceMode2D.Impulse);
             ChangeAnimation(attackHash);
+            yield return new WaitForSeconds(animTime);
+            StartCoroutine(Explode());
         }
-        else if (currentState == PlayerState.WATER)
+        else if(currentState == PlayerState.WATER)
         {
-            if (waterPower.isPlaying)
-                return;
-            rb.AddForce(flipX ? new Vector2(-1,1) * splashForce :Vector2.one * splashForce, ForceMode2D.Impulse);
-            waterPower.Play();
+            if (!waterPower.isPlaying)
+            {
+                rb.AddForce(flipX ? new Vector2(-1, 1) * splashForce : Vector2.one * splashForce, ForceMode2D.Impulse);
+                waterPower.Play();
+            }
+            yield return new WaitForSeconds(animTime);
+            StartCoroutine(Explode());
         }
         else
         {
@@ -254,6 +263,7 @@ public class Player : MonoBehaviour
         
         currentHash = animToTrigger;        
         anim.SetBool(idleHash, false);
+        anim.SetBool(attackHash, false);
         anim.SetBool(walkHash, false);
         anim.SetBool(jumpHash, false);
         anim.SetBool(climbHash, false);
@@ -268,6 +278,7 @@ public class Player : MonoBehaviour
     {
         isBusy = true;
         anim.SetBool(idleHash, false);
+        anim.SetBool(attackHash, false);
         anim.SetBool(walkHash, false);
         anim.SetBool(jumpHash, false);
         anim.SetBool(climbHash, false);
@@ -316,7 +327,6 @@ public class Player : MonoBehaviour
     }
     private void Jump()
     {
-        print(isBusy);
         if(isBusy) 
             return;
         if (canJump && isJumping && currentState == PlayerState.DRUID)
@@ -327,12 +337,12 @@ public class Player : MonoBehaviour
         }
         else if(isJumping && currentState == PlayerState.FIRE)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce * 0.5f, ForceMode2D.Impulse);
             isJumping = false;
         }
         else if (canJump && isJumping && currentState == PlayerState.WATER)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.AddForce(Vector2.up * jumpForce * 2f, ForceMode2D.Impulse);
             isJumping = false;
         }
     }
@@ -347,7 +357,6 @@ public class Player : MonoBehaviour
             isJumping = false;
         }
     }
-
     private void CheckJump()
     {
         Debug.DrawRay(transform.position, Vector2.down * groundCheckDist, Color.red);
@@ -437,14 +446,12 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.gameObject.CompareTag("Ground") || currentState == PlayerState.DRUID)        
-            return;
         ITriggerable hit;
-        if (collision.gameObject.TryGetComponent(out hit))
+        if (collision.gameObject.TryGetComponent(out hit) && currentState != PlayerState.DRUID)
         {
             hit.Trigger();
+            StartCoroutine(Explode());
         }
-        Explode();
     }
     private IEnumerator Explode()
     {
@@ -469,7 +476,6 @@ public class Player : MonoBehaviour
         isHiding = !isHiding;
         canMove = false;
         canJump = false;
-        canSummon = false;
         ChangeAnimation(hideHash);
         while(isHiding && canHide)
         {
@@ -477,7 +483,6 @@ public class Player : MonoBehaviour
         }
         canMove = true;
         canJump = true;
-        canSummon = true;
         isHiding = false;
         ChangeAnimation(idleHash);
     }
