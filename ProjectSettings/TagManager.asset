@@ -11,6 +11,8 @@ TagManager:
   - Waypoint
   - Key
   - Torch
+  - Fireball
+  - Door
   layers:
   - Default
   - TransparentFX
