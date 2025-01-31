@@ -8,18 +8,18 @@ public class Torch : MonoBehaviour, ITriggerable
     private readonly int waterHash = Animator.StringToHash("WaterTorch");
     public enum TorchType { Fire, Water }
     public TorchType torchType;
-    private TorchType currentType;
+    public TorchType currentType;
 
     private Animator anim;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        currentType = torchType;
     }
 
     private void Start()
     {
-        currentType = torchType;
         ChangeAnimation();
     }
 
@@ -40,16 +40,26 @@ public class Torch : MonoBehaviour, ITriggerable
         switch (currentType)
         {
             case TorchType.Fire:
-                anim.SetTrigger(fireHash);
+                anim.SetBool(fireHash, true);
+                anim.SetBool(waterHash, false);
+                GameManager.instance.blueFlames--;
+                GameManager.instance.redFlames++;
                 break;
             case TorchType.Water:
-                anim.SetTrigger(waterHash);
+                anim.SetBool(waterHash, true);
+                anim.SetBool(fireHash, false);
+                GameManager.instance.blueFlames++;
+                GameManager.instance.redFlames--;
                 break;
         }
     }
 
     public void Trigger()
     {
-        ChangeAnimation(true);
+        print(Player.instance.currentState);
+        if(Player.instance.currentState == Player.PlayerState.WATER && currentType == TorchType.Fire)
+            ChangeAnimation(true);
+        else if(Player.instance.currentState == Player.PlayerState.FIRE && currentType == TorchType.Water)
+            ChangeAnimation(true);
     }
 }
