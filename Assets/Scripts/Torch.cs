@@ -16,11 +16,11 @@ public class Torch : MonoBehaviour, ITriggerable
     {
         anim = GetComponent<Animator>();
         currentType = torchType;
+        ChangeAnimation();
     }
 
     private void Start()
     {
-        ChangeAnimation();
     }
 
     private void ChangeAnimation(bool toSwitch = false)
@@ -42,12 +42,16 @@ public class Torch : MonoBehaviour, ITriggerable
             case TorchType.Fire:
                 anim.SetBool(fireHash, true);
                 anim.SetBool(waterHash, false);
+                if(GameManager.instance == null)
+                    return;
                 GameManager.instance.blueFlames--;
                 GameManager.instance.redFlames++;
                 break;
             case TorchType.Water:
                 anim.SetBool(waterHash, true);
                 anim.SetBool(fireHash, false);
+                if (GameManager.instance == null)
+                    return;
                 GameManager.instance.blueFlames++;
                 GameManager.instance.redFlames--;
                 break;

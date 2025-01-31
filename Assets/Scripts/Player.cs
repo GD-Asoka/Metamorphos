@@ -311,6 +311,8 @@ public class Player : MonoBehaviour
         anim.SetBool(waterHash, false);
         anim.SetBool(birdHash, false);
         anim.SetBool(fishHash, false);
+        anim.SetBool(hideHash, false);
+        isHiding = false;
     }
     private void Move()
     {
@@ -533,7 +535,7 @@ public class Player : MonoBehaviour
         canMove = true;
         canJump = true;
         isHiding = false;
-        ChangeAnimation(idleHash);
+        //ChangeAnimation(idleHash);
     }
     private IEnumerator Defeat()
     {

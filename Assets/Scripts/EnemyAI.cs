@@ -235,7 +235,6 @@ public class EnemyAI : MonoBehaviour
                 isDead = true;
                 StopAllCoroutines();
                 anim.SetTrigger(deathHash);
-                GetComponent<Collider2D>().isTrigger = true;
                 rb.gravityScale = 5;
                 StartCoroutine(Kill());
                 GameManager.instance.enemiesKilled++;
@@ -249,10 +248,12 @@ public class EnemyAI : MonoBehaviour
         while (!grounded)
         {
             grounded = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, groundMask);
-        }
             yield return null;
+        }
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
+        GetComponent<CircleCollider2D>().isTrigger = true;
+        GetComponent<CircleCollider2D>().enabled = false;
     }
     public bool CanHearSound(SoundSource sound)
     {

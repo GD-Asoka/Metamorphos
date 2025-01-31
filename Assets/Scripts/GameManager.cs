@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI enemiesKilledText, blueFlamesText, redFlamesText, druidPowersText;
     public Image key;
     public bool keyCollected;
+    public AudioSource audioSource;
+    public AudioClip bgm1, bgm2;
 
     private void Awake()
     {
@@ -24,6 +26,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        audioSource = GetComponent<AudioSource>();
     }
     private void Start()
     {
@@ -32,6 +35,8 @@ public class GameManager : MonoBehaviour
         var torches = FindObjectsOfType<Torch>();
         if (torches == null)
             return;
+        blueFlames = 0;
+        redFlames = 0;
         foreach (var t in torches)
         {
             if (t.currentType == Torch.TorchType.Fire)
@@ -44,6 +49,7 @@ public class GameManager : MonoBehaviour
             }
         }
         druidPowers--;
+        UpdateBGM();
     }
     private void CheckState()
     {
@@ -138,7 +144,11 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region AUDIO
-
+    private void UpdateBGM()
+    {
+        audioSource.clip = Random.value > 0.5f ? bgm1 : bgm2;
+        audioSource.Play();
+    }
     #endregion
     #region SCENE MANAGEMENT
     public void Restart()
