@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,13 +9,31 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject Canvas, PauseMenu, ControlsMenu, overlay;
     private bool canWin = false;
-    public int enemiesKilled, blueFlames, redFlames, druidPowers;
+    [HideInInspector]public int enemiesKilled, blueFlames, redFlames, druidPowers;
     public int enemyLimit, blueFlameCondition, redFlameCondition, druidPowerLimit;
     public TextMeshProUGUI enemiesKilledText, blueFlamesText, redFlamesText, druidPowersText;
     public Image key;
     public bool keyCollected;
     public AudioSource audioSource;
-    public AudioClip[] bgm, hurt, confused, singing, bored, tree, vine, bird, fish;
+    public AudioClip[] bgm, pHurt, eHurt, eAttack, confused, singing, bored, tree, vine, bird, fish;
+    public enum Player_VFX
+    {
+        Hurt,
+        Sing, 
+        Bored, 
+        Tree, 
+        Vine,
+        Bird,
+        Fish,
+    }
+    public Player_VFX playerVFX;
+    public enum Enemy_VFX
+    {
+        Hurt, 
+        Confused,
+        Attack,
+    }
+    public Enemy_VFX enemyVFX;
 
     private void Awake()
     {
@@ -144,11 +163,72 @@ public class GameManager : MonoBehaviour
     }
     #endregion
     #region AUDIO
-    private void UpdateBGM()
+    public void UpdateBGM()
     {
         var rand = Random.Range(0, bgm.Length);
         audioSource.clip = bgm[rand];
         audioSource.Play();
+    }
+    bool playerCanPlay, enemyCanPlay;
+    public void PlayPlayerVFX(Player_VFX vfx)
+    {
+        if (!playerCanPlay)
+            return;
+        switch (vfx)
+        {
+            case Player_VFX.Hurt:
+                StartCoroutine(PlayerVFX(pHurt[Random.Range(0, pHurt.Length)]));
+                break;
+            case Player_VFX.Sing:
+                StartCoroutine(PlayerVFX(singing[Random.Range(0, singing.Length)]));
+                break;
+            case Player_VFX.Bored:
+                StartCoroutine(PlayerVFX(bored[Random.Range(0, bored.Length)]));
+                break;
+            case Player_VFX.Tree:
+                StartCoroutine(PlayerVFX(tree[Random.Range(0, tree.Length)]));
+                break;
+            case Player_VFX.Vine:
+                StartCoroutine(PlayerVFX(vine[Random.Range(0, vine.Length)]));
+                break;
+            case Player_VFX.Bird:
+                StartCoroutine(PlayerVFX(bird[Random.Range(0, bird.Length)]));
+                break;
+            case Player_VFX.Fish:
+                StartCoroutine(PlayerVFX(fish[Random.Range(0, fish.Length)]));
+                break;
+        }
+    }
+    private IEnumerator PlayerVFX(AudioClip audioClip)
+    {
+        playerCanPlay = false;
+        audioSource.PlayOneShot(audioClip);
+        yield return new WaitForSeconds(1f);
+        playerCanPlay = true;
+    }
+    public void PlayEnemyVFX(Enemy_VFX vfx)
+    {
+        if (!enemyCanPlay)
+            return;
+        switch(vfx)
+        {
+            case Enemy_VFX.Hurt:
+                StartCoroutine(EnemyVFX(eHurt[Random.Range(0, eHurt.Length)]));
+                break;
+            case Enemy_VFX.Confused:
+                StartCoroutine(EnemyVFX(confused[Random.Range(0, confused.Length)]));
+                break;
+            case Enemy_VFX.Attack:
+                StartCoroutine(EnemyVFX(eAttack[Random.Range(0, eAttack.Length)]));
+                break;
+        }
+    }
+    private IEnumerator EnemyVFX(AudioClip audioClip)
+    {
+        enemyCanPlay = false;
+        audioSource.PlayOneShot(audioClip);
+        yield return new WaitForSeconds(1f);
+        enemyCanPlay = true;
     }
     #endregion
     #region SCENE MANAGEMENT

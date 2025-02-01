@@ -144,6 +144,7 @@ public class EnemyAI : MonoBehaviour
         rb.velocity = Vector2.zero;
         while(isAttacking)
         {
+            GameManager.instance.PlayEnemyVFX(GameManager.Enemy_VFX.Attack);
             ChangeAnimation(attackHash);
             if (player.transform.position.x < transform.position.x)
                 flipX = true;
@@ -166,6 +167,7 @@ public class EnemyAI : MonoBehaviour
         var time = 0f;
         while(isChasing)
         {
+            GameManager.instance.PlayEnemyVFX(GameManager.Enemy_VFX.Confused);
             time += Time.deltaTime;
             ChangeAnimation(walkHash);
             rb.velocity = dir.normalized * moveSpeed;
@@ -232,6 +234,7 @@ public class EnemyAI : MonoBehaviour
         {
             if(player.currentState != Player.PlayerState.DRUID)
             {
+                GameManager.instance.PlayEnemyVFX(GameManager.Enemy_VFX.Hurt);
                 isDead = true;
                 StopAllCoroutines();
                 anim.SetTrigger(deathHash);

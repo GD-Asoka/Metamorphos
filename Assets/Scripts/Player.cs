@@ -107,6 +107,7 @@ public class Player : MonoBehaviour
         currentHash = idleHash;
         ChangeAnimation(idleHash);
     }
+    float idleTime = 0, idleLimit = 5f;
     void Update()
     {
         if(isDead)
@@ -117,6 +118,14 @@ public class Player : MonoBehaviour
         CheckMovement();
         if (currentState != PlayerState.DRUID)
             anim.SetBool(idleHash, false);
+        idleTime += Time.deltaTime;
+        if(idleTime >= idleLimit)
+        {
+            GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Bored);
+            idleTime = 0;
+        }
+        if(Input.anyKey)
+            idleTime = 0;
     }
     private void FixedUpdate()
     {
@@ -140,11 +149,13 @@ public class Player : MonoBehaviour
         clickPos.z = 0;
         if (Physics2D.OverlapPoint(clickPos, groundMask))
         {
+            GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Tree);
             Instantiate(tree, clickPos, Quaternion.identity);
             StartCoroutine(QueueAnimation(summonHash, idleHash));
         }
         else if (Physics2D.OverlapPoint(clickPos, ceilingMask))
         {
+            GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Vine);
             StartCoroutine(QueueAnimation(summonHash, idleHash));
             Instantiate(vine, clickPos, Quaternion.identity);
         }
@@ -157,6 +168,7 @@ public class Player : MonoBehaviour
     }
     private void FishTransform(CallbackContext ctx)
     {
+        GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Fish);
         if (currentState == PlayerState.DRUID)
             ChangeState(PlayerState.WATER);
         else if (currentState == PlayerState.WATER)
@@ -164,6 +176,7 @@ public class Player : MonoBehaviour
     }
     private void BirdTransform(CallbackContext ctx)
     {
+        GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Bird);
         if (currentState == PlayerState.DRUID)
             ChangeState(PlayerState.FIRE);
         else if (currentState == PlayerState.FIRE)
@@ -432,6 +445,7 @@ public class Player : MonoBehaviour
         {
             if (currentState == PlayerState.DRUID)
             {
+                GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Hurt);
                 StopAllCoroutines();                
                 StartCoroutine(Defeat());
             }
@@ -444,6 +458,7 @@ public class Player : MonoBehaviour
         {
             if(GameManager.instance.CheckWin())
             {
+                GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Sing);
                 StartCoroutine(Win());
             }
         }        
