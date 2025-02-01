@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public Image key;
     public bool keyCollected;
     public AudioSource audioSource;
-    public AudioClip bgm1, bgm2;
+    public AudioClip[] bgm, hurt, confused, singing, bored, tree, vine, bird, fish;
 
     private void Awake()
     {
@@ -146,7 +146,8 @@ public class GameManager : MonoBehaviour
     #region AUDIO
     private void UpdateBGM()
     {
-        audioSource.clip = Random.value > 0.5f ? bgm1 : bgm2;
+        var rand = Random.Range(0, bgm.Length);
+        audioSource.clip = bgm[rand];
         audioSource.Play();
     }
     #endregion
