@@ -26,14 +26,14 @@ public class GameManager : MonoBehaviour
         Bird,
         Fish,
     }
-    public Player_VFX playerVFX;
+    //public Player_VFX playerVFX;
     public enum Enemy_VFX
     {
         Hurt, 
         Confused,
         Attack,
     }
-    public Enemy_VFX enemyVFX;
+    //public Enemy_VFX enemyVFX;
 
     private void Awake()
     {
@@ -169,7 +169,8 @@ public class GameManager : MonoBehaviour
         audioSource.clip = bgm[rand];
         audioSource.Play();
     }
-    bool playerCanPlay, enemyCanPlay;
+    bool playerCanPlay = true, enemyCanPlay = true;
+    public float audioWaitTime = 1f, audioClipVolume = 2f;
     public void PlayPlayerVFX(Player_VFX vfx)
     {
         if (!playerCanPlay)
@@ -202,8 +203,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator PlayerVFX(AudioClip audioClip)
     {
         playerCanPlay = false;
-        audioSource.PlayOneShot(audioClip);
-        yield return new WaitForSeconds(1f);
+        audioSource.PlayOneShot(audioClip, audioClipVolume);
+        yield return new WaitForSeconds(audioWaitTime);
         playerCanPlay = true;
     }
     public void PlayEnemyVFX(Enemy_VFX vfx)
@@ -226,8 +227,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator EnemyVFX(AudioClip audioClip)
     {
         enemyCanPlay = false;
-        audioSource.PlayOneShot(audioClip);
-        yield return new WaitForSeconds(1f);
+        audioSource.PlayOneShot(audioClip, audioClipVolume);
+        yield return new WaitForSeconds(audioWaitTime);
         enemyCanPlay = true;
     }
     #endregion

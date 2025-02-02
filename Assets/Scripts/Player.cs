@@ -122,6 +122,8 @@ public class Player : MonoBehaviour
         if(idleTime >= idleLimit)
         {
             GameManager.instance.PlayPlayerVFX(GameManager.Player_VFX.Bored);
+            anim.SetBool(idleHash, false);
+            ChangeAnimation(Random.value < 0.5f ? summonHash : jumpHash);
             idleTime = 0;
         }
         if(Input.anyKey)
@@ -139,7 +141,6 @@ public class Player : MonoBehaviour
             Jump();
         }
     }
-
     private void Fire(CallbackContext ctx)
     {
         if(currentState != PlayerState.DRUID || isBusy)
@@ -562,16 +563,13 @@ public class Player : MonoBehaviour
         GameManager.instance.Restart();
     }
     private IEnumerator Win()
-    {
-        if(!isBusy)
-        {
-            isBusy = true;
-            anim.SetTrigger("victory");
-            DisableAnimations();
-            hasWon = true;
-            yield return new WaitForSeconds(2f);
-            GameManager.instance.LoadNextLevel();
-        }
+    {        
+        isBusy = true;
+        anim.SetTrigger("victory");
+        DisableAnimations();
+        hasWon = true;
+        yield return new WaitForSeconds(5f);
+        GameManager.instance.LoadNextLevel();        
     }
     private IEnumerator SummonTimer()
     {
