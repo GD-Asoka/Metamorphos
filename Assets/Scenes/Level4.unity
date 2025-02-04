@@ -11479,11 +11479,6 @@ MonoBehaviour:
   m_MaximumFOV: 60
   m_MinimumOrthoSize: 1
   m_MaximumOrthoSize: 5000
---- !u!1 &1228653419 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4801066089538684936, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
-  m_PrefabInstance: {fileID: 7598157312911713469}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1228733261
 GameObject:
   m_ObjectHideFlags: 0
@@ -17274,41 +17269,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2537184681679465105, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
   m_PrefabInstance: {fileID: 7598157312911713469}
   m_PrefabAsset: {fileID: 0}
---- !u!58 &2066641991
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1228653419}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2
 --- !u!1001 &2067255984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17906,6 +17866,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5671287611796595237, guid: 5363383afc3b1ed45bca9849c5aeb3b5, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 14.9001465
+      objectReference: {fileID: 0}
+    - target: {fileID: 5671287611796595237, guid: 5363383afc3b1ed45bca9849c5aeb3b5, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -119.400024
+      objectReference: {fileID: 0}
     - target: {fileID: 5878702196215478481, guid: 5363383afc3b1ed45bca9849c5aeb3b5, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -18344,10 +18312,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2537184681679465105, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
       insertIndex: -1
       addedObject: {fileID: 889782956}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4801066089538684936, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2066641991}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3bd77ab1350cb554e96b065adf78e956, type: 3}
 --- !u!1001 &8224102456506038841
 PrefabInstance:

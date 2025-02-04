@@ -14662,6 +14662,7 @@ MonoBehaviour:
   fireParticles: {fileID: 1166108211903164040}
   waterParticles: {fileID: 6141784670229696900}
   waterPower: {fileID: 1876038230174290215}
+  isHiding: 0
   animTime: 1
   animSpeed: 0.15
   summonTime: 5
@@ -14787,7 +14788,7 @@ CircleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4801066089538684936}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
