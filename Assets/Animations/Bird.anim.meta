@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Bird.anim.meta
 guid: 71036e793354ae545999f1e421ae1f16
+========
+guid: 84901e32216b8a841938f84aadf18714
+>>>>>>>> 674f05a (ui and anims):Assets/Animations/Player_Idle.anim.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000

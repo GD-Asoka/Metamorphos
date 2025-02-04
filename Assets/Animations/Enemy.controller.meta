@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/Enemy.controller.meta
 guid: 27dc6d615605a1c4a805d6435755cdae
+========
+guid: cb7f26ecd13e53949bbc3afbb01bb5ec
+>>>>>>>> 674f05a (ui and anims):Assets/Animations/Player.controller.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 9100000
